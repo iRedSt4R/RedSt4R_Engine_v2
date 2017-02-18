@@ -1,5 +1,5 @@
 #pragma once
-#include "Interfaces/ITexture.h"
+#include "Interfaces/Texture.h"
 #include "Interfaces/Renderer.h"
 #include "Interfaces/CommandBuffer.h"
 

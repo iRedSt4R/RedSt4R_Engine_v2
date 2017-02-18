@@ -2,6 +2,7 @@
 #include "VkBase.h"
 #include "VkRenderer.h"
 
+
 RedSt4R::API::VulkanCommandBuffer::VulkanCommandBuffer(float flags)
 {
 	VkResult r;
@@ -16,7 +17,7 @@ RedSt4R::API::VulkanCommandBuffer::VulkanCommandBuffer(float flags)
 	if (r != VK_SUCCESS) RS_ERROR("Failed Creating Command Pool!")
 	else RS_LOG("Successfully Created Command Pool")
 
-		VkCommandBufferAllocateInfo cbAllocateInfo = {};
+	VkCommandBufferAllocateInfo cbAllocateInfo = {};
 	cbAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	cbAllocateInfo.pNext = nullptr;
 	cbAllocateInfo.commandBufferCount = 1;
@@ -28,6 +29,10 @@ RedSt4R::API::VulkanCommandBuffer::VulkanCommandBuffer(float flags)
 
 	cbBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	cbBeginInfo.pNext = nullptr;
+
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &m_CommandBuffer;
 }
 
 RedSt4R::API::VulkanCommandBuffer::~VulkanCommandBuffer()
@@ -43,6 +48,13 @@ void RedSt4R::API::VulkanCommandBuffer::Begin()
 void RedSt4R::API::VulkanCommandBuffer::End()
 {
 	vkEndCommandBuffer(m_CommandBuffer);
+}
+
+void RedSt4R::API::VulkanCommandBuffer::SubmitToQueue(void* pQueue)
+{
+	VkResult r;
+	r = vkQueueSubmit((VkQueue)pQueue, 1, &submitInfo, VkRenderer::m_Fence);
+	if (r != VK_SUCCESS) RS_ERROR("Failed Submitting to Queue!");
 }
 
 void RedSt4R::API::VulkanCommandBuffer::Reset()

@@ -12,6 +12,9 @@ namespace RedSt4R
 			VkCommandPool		m_CommandPool = VK_NULL_HANDLE;
 			VkCommandBuffer		m_CommandBuffer = VK_NULL_HANDLE;
 			VkCommandBufferBeginInfo cbBeginInfo = {};
+			VkSubmitInfo submitInfo = {};
+
+
 
 		public:
 			VulkanCommandBuffer(float flags);
@@ -19,6 +22,7 @@ namespace RedSt4R
 
 			virtual void Begin() override;
 			virtual void End() override;
+			virtual void SubmitToQueue(void* pQueue) override;
 			virtual void Reset() override;
 		};
 

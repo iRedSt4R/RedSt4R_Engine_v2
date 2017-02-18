@@ -1,5 +1,5 @@
 #pragma once
-#include "../Interfaces/ITexture.h"
+#include "../Interfaces/Texture.h"
 #include "../../RSIncludeVulkan.h"
 #include "../../Debug/DebugMacros.h"
 

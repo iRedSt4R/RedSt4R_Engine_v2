@@ -26,9 +26,9 @@ namespace RedSt4R
 			VkCommandBuffer		m_CommandBuffer		= VK_NULL_HANDLE;
 			CommandBuffer* m_commandbuf;
 
-			VkQueue				m_Queue				= VK_NULL_HANDLE;
-			VkFence				m_Fence				= VK_NULL_HANDLE;
-			VkSemaphore			m_Semaphore			= VK_NULL_HANDLE;
+			static VkQueue				m_Queue;
+			static VkFence				m_Fence;
+			static VkSemaphore			m_Semaphore;
 
 			VkSurfaceKHR		m_Surface			= VK_NULL_HANDLE;								
 			VkSwapchainKHR		m_Swapchain			= VK_NULL_HANDLE;

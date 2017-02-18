@@ -11,6 +11,7 @@ namespace RedSt4R
 		public:
 			virtual void Begin() = 0;
 			virtual void End() = 0;
+			virtual void SubmitToQueue(void* pQueue) = 0;
 			virtual void Reset() = 0;
 
 			static CommandBuffer* CreateCommandBuffer(float flags);

@@ -4,6 +4,12 @@ VkResult r;
 
 int RedSt4R::API::VkRenderer::queueFamilyIndexWithGB = 0;
 
+VkQueue RedSt4R::API::VkRenderer::m_Queue = VK_NULL_HANDLE;
+
+VkFence RedSt4R::API::VkRenderer::m_Fence = VK_NULL_HANDLE;
+
+VkSemaphore RedSt4R::API::VkRenderer::m_Semaphore = VK_NULL_HANDLE;
+
 RedSt4R::API::VkRenderer::VkRenderer(GLFWwindow *pWindow)
 {
 	m_Window = pWindow;
@@ -194,20 +200,9 @@ void RedSt4R::API::VkRenderer::Update()
 
 void RedSt4R::API::VkRenderer::Render()
 {
-	VkSubmitInfo submitInfo = {};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &m_CommandBuffer;
-
-	//--------------- STARTING RECORDING COMMANDS TO COMMAND BUFFERS --------------//
 	m_commandbuf->Begin();
-
 	m_commandbuf->End();
-	//---------------- ENDED RECORDING COMMANDS TO COMMAND BUFFERS --------------//
-
-	//Submitting Command Buffers to Queue/s
-	r = vkQueueSubmit(m_Queue, 1, &submitInfo, m_Fence);
-	if (r != VK_SUCCESS) RS_ERROR("Failed Submitting Command Buffer To Queue!");
+	m_commandbuf->SubmitToQueue(m_Queue);
 
 	vkWaitForFences(m_Device, 1, &m_Fence, VK_TRUE, UINT64_MAX);
 
