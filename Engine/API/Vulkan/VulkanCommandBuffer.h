@@ -9,12 +9,10 @@ namespace RedSt4R
 		class VulkanCommandBuffer : public CommandBuffer
 		{
 		public:
-			VkCommandPool		m_CommandPool = VK_NULL_HANDLE;
-			VkCommandBuffer		m_CommandBuffer = VK_NULL_HANDLE;
+			VkCommandPool m_CommandPool = VK_NULL_HANDLE;
+			VkCommandBuffer	m_CommandBuffer;
 			VkCommandBufferBeginInfo cbBeginInfo = {};
 			VkSubmitInfo submitInfo = {};
-
-
 
 		public:
 			VulkanCommandBuffer(float flags);
@@ -24,6 +22,9 @@ namespace RedSt4R
 			virtual void End() override;
 			virtual void SubmitToQueue(void* pQueue) override;
 			virtual void Reset() override;
+
+			//__inline static VulkanCommandBuffer* GetVulkanCommandBuffer
+			__inline VkCommandBuffer GetVkCommandBuffer() { return m_CommandBuffer; }
 		};
 
 	}

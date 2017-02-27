@@ -13,7 +13,7 @@ RedSt4R::API::VulkanCommandBuffer::VulkanCommandBuffer(float flags)
 	cpcf.queueFamilyIndex = VkRenderer::queueFamilyIndexWithGB;
 	cpcf.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-	r = vkCreateCommandPool(VkBase::device, &cpcf, nullptr, &m_CommandPool);
+	r = vkCreateCommandPool(VkRenderer::m_Device, &cpcf, nullptr, &m_CommandPool);
 	if (r != VK_SUCCESS) RS_ERROR("Failed Creating Command Pool!")
 	else RS_LOG("Successfully Created Command Pool")
 
@@ -24,11 +24,12 @@ RedSt4R::API::VulkanCommandBuffer::VulkanCommandBuffer(float flags)
 	cbAllocateInfo.commandPool = m_CommandPool;
 	cbAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
-	r = vkAllocateCommandBuffers(VkBase::device, &cbAllocateInfo, &m_CommandBuffer);
+	r = vkAllocateCommandBuffers(VkRenderer::m_Device, &cbAllocateInfo, &m_CommandBuffer);
 	if (r != VK_SUCCESS) RS_ERROR("Failed Allocating Command Buffers!");
 
 	cbBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	cbBeginInfo.pNext = nullptr;
+	cbBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.commandBufferCount = 1;

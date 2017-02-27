@@ -12,6 +12,7 @@ namespace RedSt4R
 		private:
 			VkImage image;
 			VkImageView imageView;
+			VkFramebuffer frameBuffer;
 
 		public:
 			VkTexture(float width, float hight, int textureType, int flags);

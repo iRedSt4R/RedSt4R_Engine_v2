@@ -12,6 +12,7 @@ namespace RedSt4R
 			virtual void BeginRenderer() = 0;
 			virtual void Update() = 0;
 			virtual void Render() = 0;
+			virtual void EndRenderer() = 0;
 			virtual void ShutDownRenderer() = 0;
 
 			static Renderer* CreateRenderer(GLFWwindow* pWindow);
