@@ -6,7 +6,7 @@ namespace RedSt4R
 {
 	namespace API
 	{
-		class CommandBuffer
+		class RSCommandBuffer
 		{
 		public:
 			virtual void Begin() = 0;
@@ -14,7 +14,7 @@ namespace RedSt4R
 			virtual void SubmitToQueue(void* pQueue) = 0;
 			virtual void Reset() = 0;
 
-			static CommandBuffer* CreateCommandBuffer(float flags);
+			static RSCommandBuffer* CreateCommandBuffer(float flags);
 		};
 	}
 }

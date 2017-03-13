@@ -1,16 +1,16 @@
 #pragma once
+#include "../RSIncludeOpenGL.h"
 #include "../../Config/RenderingConfig.h"
-#include "../../RSIncludeVulkan.h"
 #include "../../Debug/DebugMacros.h"
 
 namespace RedSt4R
 {
 	namespace API
 	{
-		class RSVertexShader
+		class RSVertexBuffer
 		{
 		public:
-			static RSVertexShader* CreateVertexShader(char* shaderPath);
+			static RSVertexBuffer* CreateVertexBuffer(int size, glm::vec3* vertexData);
 		};
 	}
 }

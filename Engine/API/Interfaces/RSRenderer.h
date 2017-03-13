@@ -5,7 +5,7 @@ namespace RedSt4R
 {
 	namespace API
 	{
-		class Renderer
+		class RSRenderer
 		{
 		public:
 			virtual void InitRenderer() = 0; 
@@ -15,7 +15,7 @@ namespace RedSt4R
 			virtual void EndRenderer() = 0;
 			virtual void ShutDownRenderer() = 0;
 
-			static Renderer* CreateRenderer(GLFWwindow* pWindow);
+			static RSRenderer* CreateRenderer(GLFWwindow* pWindow);
 		};
 	}
 }

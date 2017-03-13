@@ -3,10 +3,11 @@
 
 #include "../Debug/DebugMacros.h"
 
-#include "Interfaces/Texture.h"
-#include "Interfaces/Renderer.h"
-#include "Interfaces/CommandBuffer.h"
+#include "Interfaces/RSTexture.h"
+#include "Interfaces/RSRenderer.h"
+#include "Interfaces/RSCommandBuffer.h"
 #include "Interfaces/RSVertexShader.h"
+#include "Interfaces/RSPixelShader.h"
 
 //#include "Vulkan/VkRenderer.h"
 //#include "Vulkan/VkTexture.h"

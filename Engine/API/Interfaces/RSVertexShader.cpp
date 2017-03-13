@@ -1,13 +1,14 @@
 #include "RSVertexShader.h"
-#include "../Vulkan/VulkanVertexShader.h"
+#include "../OpenGL/OpenGLVertexShader.h"
 
 namespace RedSt4R
 {
 	namespace API
 	{
-		RSVertexShader* RSVertexShader::CreateVertexShader()
+		RSVertexShader* RSVertexShader::CreateVertexShader(char* shaderPath)
 		{
-			if (USE_VULKAN) return new VulkanVertexShader();
+			//if (USE_VULKAN) return new VulkanVertexShader(shaderPath);
+			if (USE_OPENGL) return new OpenGLVertexShader(shaderPath);
 		}
 
 	}

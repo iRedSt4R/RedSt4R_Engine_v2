@@ -8,7 +8,7 @@ namespace RedSt4R
 {
 	namespace API
 	{
-		class VkRenderer : public Renderer
+		class VulkanRenderer : public RSRenderer
 		{
 		public:
 			GLFWwindow*			m_Window			= nullptr;
@@ -16,7 +16,7 @@ namespace RedSt4R
 			std::vector<VkPhysicalDevice>			vPhysicalDevices;
 			std::vector<VkQueueFamilyProperties>	vQueueFamilyProperties;
 
-			CommandBuffer* m_commandbuf;
+			RSCommandBuffer* m_commandbuf;
 
 			static int queueFamilyIndexWithGB;
 			uint32_t currentBackBufferIndex = UINT32_MAX;
@@ -48,8 +48,8 @@ namespace RedSt4R
 			VkClearValue clearValue;
 
 		public:
-			VkRenderer(GLFWwindow *pWindow);
-			~VkRenderer();
+			VulkanRenderer(GLFWwindow *pWindow);
+			~VulkanRenderer();
 		
 			void InitRenderer() override;
 			void BeginRenderer() override;

@@ -1,27 +1,27 @@
-#include "VkRenderer.h"
+#include "VulkanRenderer.h"
 #include "VkBase.h"
 
 using namespace RedSt4R;
 
 VkResult r;
 
-int RedSt4R::API::VkRenderer::queueFamilyIndexWithGB = 0;
-VkDevice RedSt4R::API::VkRenderer::m_Device = VK_NULL_HANDLE;
-VkQueue RedSt4R::API::VkRenderer::m_Queue = VK_NULL_HANDLE;
-VkFence RedSt4R::API::VkRenderer::m_Fence = VK_NULL_HANDLE;
-VkSemaphore RedSt4R::API::VkRenderer::m_Semaphore = VK_NULL_HANDLE;
+int RedSt4R::API::VulkanRenderer::queueFamilyIndexWithGB = 0;
+VkDevice RedSt4R::API::VulkanRenderer::m_Device = VK_NULL_HANDLE;
+VkQueue RedSt4R::API::VulkanRenderer::m_Queue = VK_NULL_HANDLE;
+VkFence RedSt4R::API::VulkanRenderer::m_Fence = VK_NULL_HANDLE;
+VkSemaphore RedSt4R::API::VulkanRenderer::m_Semaphore = VK_NULL_HANDLE;
 
-RedSt4R::API::VkRenderer::VkRenderer(GLFWwindow *pWindow)
+RedSt4R::API::VulkanRenderer::VulkanRenderer(GLFWwindow *pWindow)
 {
 	m_Window = pWindow;
 }
 
-RedSt4R::API::VkRenderer::~VkRenderer()
+RedSt4R::API::VulkanRenderer::~VulkanRenderer()
 {
 	
 }
 
-void RedSt4R::API::VkRenderer::InitRenderer()
+void RedSt4R::API::VulkanRenderer::InitRenderer()
 {
 	//------------------------- Application and Instance ----------------------------//
 	VkApplicationInfo applicationInfo = {};
@@ -125,7 +125,7 @@ void RedSt4R::API::VkRenderer::InitRenderer()
 	scCreateInfo.imageFormat = m_SurfaceFormat.format;
 	scCreateInfo.imageColorSpace = m_SurfaceFormat.colorSpace;
 	scCreateInfo.imageExtent.width = EngineConfig::GetWindowWidth();
-	scCreateInfo.imageExtent.height = EngineConfig::GetWindowHeight();;
+	scCreateInfo.imageExtent.height = EngineConfig::GetWindowHeight();
 	scCreateInfo.imageArrayLayers = 1;
 	scCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	scCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -241,10 +241,10 @@ void RedSt4R::API::VkRenderer::InitRenderer()
 	clearValue.color.float32[3] = 0.2f;
 
 	//---------------------- Command Pool and Buffers -----------------------//
-	m_commandbuf = CommandBuffer::CreateCommandBuffer(1);
+	m_commandbuf = RSCommandBuffer::CreateCommandBuffer(1);
 	
 }
-void RedSt4R::API::VkRenderer::BeginRenderer()
+void RedSt4R::API::VulkanRenderer::BeginRenderer()
 {
 	vkAcquireNextImageKHR(m_Device, m_Swapchain, UINT64_MAX, 0, m_FenceForSwapChain, &currentBackBufferIndex);
 	vkWaitForFences(m_Device, 1, &m_FenceForSwapChain, VK_TRUE, UINT64_MAX);
@@ -252,12 +252,12 @@ void RedSt4R::API::VkRenderer::BeginRenderer()
 	vkQueueWaitIdle(m_Queue);
 }
 
-void RedSt4R::API::VkRenderer::Update()
+void RedSt4R::API::VulkanRenderer::Update()
 {
 
 }
 
-void RedSt4R::API::VkRenderer::Render()
+void RedSt4R::API::VulkanRenderer::Render()
 {
 	VkRenderPassBeginInfo renderPassBeginInfo = {};
 	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -268,7 +268,6 @@ void RedSt4R::API::VkRenderer::Render()
 	renderPassBeginInfo.pClearValues = &clearValue;
 
 	m_commandbuf->Begin();
-
 	vkCmdBeginRenderPass(((VulkanCommandBuffer*)m_commandbuf)->GetVkCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	m_commandbuf->End();
 	
@@ -278,7 +277,7 @@ void RedSt4R::API::VkRenderer::Render()
 
 }
 
-void RedSt4R::API::VkRenderer::EndRenderer()
+void RedSt4R::API::VulkanRenderer::EndRenderer()
 {
 	VkResult res = VkResult::VK_RESULT_MAX_ENUM;
 
@@ -294,7 +293,7 @@ void RedSt4R::API::VkRenderer::EndRenderer()
 	vkQueuePresentKHR(m_Queue, &presentInfo);
 }
 
-void RedSt4R::API::VkRenderer::ShutDownRenderer()
+void RedSt4R::API::VulkanRenderer::ShutDownRenderer()
 {
 	
 }

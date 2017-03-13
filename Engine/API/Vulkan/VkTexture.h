@@ -1,5 +1,5 @@
 #pragma once
-#include "../Interfaces/Texture.h"
+#include "../Interfaces/RSTexture.h"
 #include "../../RSIncludeVulkan.h"
 #include "../../Debug/DebugMacros.h"
 
@@ -7,7 +7,7 @@ namespace RedSt4R
 {
 	namespace API
 	{
-		class VkTexture : public Texture
+		class VkTexture : public RSTexture
 		{
 		private:
 			VkImage image;

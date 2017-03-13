@@ -7,10 +7,10 @@ namespace RedSt4R
 {
 	namespace API
 	{
-		class RSVertexShader
+		class RSPixelShader
 		{
 		public:
-			static RSVertexShader* CreateVertexShader(char* shaderPath);
+			static RSPixelShader* CreatePixelShader(char* shaderPath);
 		};
 	}
 }

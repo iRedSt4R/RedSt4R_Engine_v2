@@ -11,11 +11,11 @@ namespace RedSt4R
 		class VulkanVertexShader : public RSVertexShader
 		{
 		public:
-			VulkanVertexShader();
+
+
+		public:
+			VulkanVertexShader(char* shaderPath);
 			~VulkanVertexShader();
-
-			virtual void Bleh() override;
-
 		};
 	}
 }
