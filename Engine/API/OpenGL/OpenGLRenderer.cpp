@@ -20,7 +20,7 @@ void RedSt4R::API::OpenGLRenderer::InitRenderer()
 
 void RedSt4R::API::OpenGLRenderer::BeginRenderer()
 {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.4f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 

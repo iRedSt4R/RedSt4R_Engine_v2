@@ -3,6 +3,7 @@
 #include <vector>
 #include "../../Debug/DebugMacros.h"
 #include "../RS_API.h"
+#include "VulkanCommandBuffer.h"
 
 namespace RedSt4R
 {

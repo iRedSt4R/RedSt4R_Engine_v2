@@ -14,7 +14,7 @@ namespace RedSt4R
 		class OpenGLPixelShader : public RSPixelShader
 		{
 		public:
-			GLuint pixelShader;
+			GLuint pixelShaderCompiled;
 
 			//For Shader Compiling Result
 			GLint success;
@@ -25,6 +25,8 @@ namespace RedSt4R
 			~OpenGLPixelShader();
 
 			char* ReadTextFromFile(char* filePath);
+			
+			__forceinline GLuint GetPixelShaderCompiled() { return pixelShaderCompiled; }
 		};
 	}
 }

@@ -5,14 +5,14 @@ RedSt4R::API::OpenGLVertexShader::OpenGLVertexShader(char* shaderPath)
 	std::string shaderSourceString = ReadTextFromFile(shaderPath);
 	const char* shaderSource = shaderSourceString.c_str();
 
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &shaderSource, NULL);
-	glCompileShader(vertexShader);
+	vertexShaderCompiled = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShaderCompiled, 1, &shaderSource, NULL);
+	glCompileShader(vertexShaderCompiled);
 
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	glGetShaderiv(vertexShaderCompiled, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		glGetShaderInfoLog(vertexShaderCompiled, 512, NULL, infoLog);
 		RS_ERROR("Failed Compiling GLSL Vertex Shader\n" << infoLog );
 	}
 }

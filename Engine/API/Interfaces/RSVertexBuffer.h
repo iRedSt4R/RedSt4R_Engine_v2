@@ -2,6 +2,7 @@
 #include "../RSIncludeOpenGL.h"
 #include "../../Config/RenderingConfig.h"
 #include "../../Debug/DebugMacros.h"
+#include "../../Core/Vertex/VertexTypes.h"
 
 namespace RedSt4R
 {
@@ -10,7 +11,7 @@ namespace RedSt4R
 		class RSVertexBuffer
 		{
 		public:
-			static RSVertexBuffer* CreateVertexBuffer(int size, glm::vec3* vertexData);
+			static RSVertexBuffer* CreateVertexBuffer(int size, VertexBase* vertexData);
 		};
 	}
 }

@@ -5,14 +5,14 @@ RedSt4R::API::OpenGLPixelShader::OpenGLPixelShader(char* shaderPath)
 	std::string shaderSourceString = ReadTextFromFile(shaderPath);
 	const char* shaderSource = shaderSourceString.c_str();
 
-	pixelShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(pixelShader, 1, &shaderSource, NULL);
-	glCompileShader(pixelShader);
+	pixelShaderCompiled = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(pixelShaderCompiled, 1, &shaderSource, NULL);
+	glCompileShader(pixelShaderCompiled);
 
-	glGetShaderiv(pixelShader, GL_COMPILE_STATUS, &success);
+	glGetShaderiv(pixelShaderCompiled, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(pixelShader, 512, NULL, infoLog);
+		glGetShaderInfoLog(pixelShaderCompiled, 512, NULL, infoLog);
 		RS_ERROR("Failed Compiling GLSL Vertex Shader\n" << infoLog);
 	}
 }

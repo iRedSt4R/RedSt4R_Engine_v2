@@ -3,17 +3,23 @@
 #include "Config/RenderingConfig.h"
 #include "Debug/DebugMacros.h"
 #include "API/RS_API.h"
-#include "API/Interfaces/RSVertexShader.h"
-#include "API/Interfaces/RSPixelShader.h"
+#include "Core/Vertex/VertexTypes.h"
+#include "Tests/TriangleTest.h"
 
-RedSt4R::API::RSRenderer* renderer;
+/*********************** Correct Order ! *********************/
+// 1) glfwInit();											  /
+// 2) Create Window                                           /
+// 3) Make Context Current                                    /
+// 4) glewInit();                                             /
+// 5) Init Others Stuff                                       /
+// 6) Loops etc...                                            /
+/**************************************************************/
+
 GLFWwindow* gameWindow;
-RedSt4R::API::RSVertexShader* vs;
-RedSt4R::API::RSPixelShader* ps;
+TriangleTest* test;
 
 void main()
 {
-
 	RedSt4R::EngineConfig::SetWindowSize(800, 600);
 
 	glfwInit();
@@ -22,8 +28,6 @@ void main()
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		gameWindow = glfwCreateWindow(RedSt4R::EngineConfig::GetWindowWidth(), RedSt4R::EngineConfig::GetWindowHeight(), "RedSt4R Vulkan Engine v0.1", nullptr, nullptr);
-
-		
 	}
 	else
 	{
@@ -34,21 +38,19 @@ void main()
 
 		gameWindow = glfwCreateWindow(RedSt4R::EngineConfig::GetWindowWidth(), RedSt4R::EngineConfig::GetWindowHeight(), "RedSt4R Vulkan Engine v0.1", nullptr, nullptr);
 	}
-	
-	renderer = RedSt4R::API::RSRenderer::CreateRenderer(gameWindow);
-	renderer->InitRenderer();
-
+	glfwMakeContextCurrent(gameWindow);
 	glewInit();
-	vs = RedSt4R::API::RSVertexShader::CreateVertexShader("Engine/Shaders/GLSL/basicVS.glsl");
-	ps = RedSt4R::API::RSPixelShader::CreatePixelShader("Engine/Shaders/GLSL/basicPS.glsl");
+
+	test = new TriangleTest(gameWindow);
+	test->Prepare();
+
+	
 
 	while (!glfwWindowShouldClose(gameWindow))
 	{
 		glfwPollEvents();
+		test->Update();
 
-		renderer->BeginRenderer();
-		renderer->Render();
-		renderer->EndRenderer();
 	}
 
 

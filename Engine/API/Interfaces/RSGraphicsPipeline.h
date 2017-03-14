@@ -9,12 +9,13 @@ namespace RedSt4R
 		class RSGraphicsPipeline
 		{
 		public:
-			RSVertexShader* vertexShader;
-			RSPixelShader* pixelShader;
-			RSCommandBuffer* commandBuffer;
+			virtual void SetVertexBuffer(RSVertexBuffer* rsVB) = 0;
+			virtual void SetVertexShader(RSVertexShader* rsVS) = 0;
+			virtual void SetPixelShader(RSPixelShader* rsPS) = 0;
+			virtual void Execute() = 0;
 
 		public:
-			static RSGraphicsPipeline* CreateGraphicsPipeline(float flags);
+			static RSGraphicsPipeline* CreateGraphicsPipeline(RSVertexBuffer* rsVB, RSVertexShader* rsVS, RSPixelShader* rsPS);
 		};
 	}
 }

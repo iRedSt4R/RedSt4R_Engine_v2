@@ -14,7 +14,7 @@ namespace RedSt4R
 		class OpenGLVertexShader : public RSVertexShader
 		{
 		public:
-			GLuint vertexShader;
+			GLuint vertexShaderCompiled;
 
 			//For Shader Compiling Result
 			GLint success;
@@ -25,6 +25,8 @@ namespace RedSt4R
 			~OpenGLVertexShader();
 
 			std::string ReadTextFromFile(char* filePath);
+
+			__forceinline GLuint GetVertexShaderCompiled() { return vertexShaderCompiled; }
 		};
 	}
 }
