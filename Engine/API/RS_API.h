@@ -6,6 +6,7 @@
 
 #include "../Debug/DebugMacros.h"
 
+#include "Interfaces/RSIndexBuffer.h"
 #include "Interfaces/RSTexture.h"
 #include "Interfaces/RSRenderer.h"
 #include "Interfaces/RSCommandBuffer.h"

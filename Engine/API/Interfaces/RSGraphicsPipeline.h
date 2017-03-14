@@ -15,7 +15,7 @@ namespace RedSt4R
 			virtual void Execute() = 0;
 
 		public:
-			static RSGraphicsPipeline* CreateGraphicsPipeline(RSVertexBuffer* rsVB, RSVertexShader* rsVS, RSPixelShader* rsPS);
+			static RSGraphicsPipeline* CreateGraphicsPipeline(RSVertexBuffer* rsVB, RSVertexShader* rsVS, RSPixelShader* rsPS, RSIndexBuffer* rsIB);
 		};
 	}
 }

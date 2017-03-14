@@ -6,6 +6,7 @@
 #include "OpenGLVertexBuffer.h"
 #include "OpenGLVertexShader.h"
 #include "OpenGLPixelShader.h"
+#include "OpenGLIndexBuffer.h"
 
 namespace RedSt4R
 {
@@ -17,6 +18,7 @@ namespace RedSt4R
 			OpenGLVertexBuffer* vertexBuffer;
 			OpenGLVertexShader* vertexShader;
 			OpenGLPixelShader* pixelShader;
+			OpenGLIndexBuffer* indexBuffer;
 
 			GLuint shaderProgram;
 			//For Shader Linking Result
@@ -33,7 +35,7 @@ namespace RedSt4R
 
 
 		public:
-			OpenGLGraphicsPipeline(RSVertexBuffer* rsVB, RSVertexShader* rsVS, RSPixelShader* rsPS);
+			OpenGLGraphicsPipeline(RSVertexBuffer* rsVB, RSVertexShader* rsVS, RSPixelShader* rsPS, RSIndexBuffer* rsIB);
 			~OpenGLGraphicsPipeline();
 		};
 	}

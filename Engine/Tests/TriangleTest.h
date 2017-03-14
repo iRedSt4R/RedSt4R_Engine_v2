@@ -12,10 +12,13 @@ class TriangleTest
 		GLFWwindow* window;
 
 		RSRenderer* renderer;
+		RSGraphicsPipeline* graphicsPipeline;
+
+		RSVertexBuffer* vb;
+		RSIndexBuffer* ib;
+
 		RSVertexShader* vs;
 		RSPixelShader* ps;
-		RSVertexBuffer* vb;
-		RSGraphicsPipeline* graphicsPipeline;
 
 	public:
 		TriangleTest(GLFWwindow* pWindow);
