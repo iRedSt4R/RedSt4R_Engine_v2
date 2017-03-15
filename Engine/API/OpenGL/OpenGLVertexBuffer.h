@@ -14,11 +14,11 @@ namespace RedSt4R
 		public:
 			GLuint vertexBuffer;
 
-			VertexBase* vertexBufferData;
+			Vertex* vertexBufferData;
 			int vertexBufferSize;
 
 		public:
-			OpenGLVertexBuffer(int size, VertexBase* vertexData);
+			OpenGLVertexBuffer(int size, Vertex* vertexData);
 			~OpenGLVertexBuffer();
 
 			__forceinline GLuint GetVertexBuffer() { return vertexBuffer; }

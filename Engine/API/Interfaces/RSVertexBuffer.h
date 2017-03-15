@@ -11,7 +11,7 @@ namespace RedSt4R
 		class RSVertexBuffer
 		{
 		public:
-			static RSVertexBuffer* CreateVertexBuffer(int size, VertexBase* vertexData);
+			static RSVertexBuffer* CreateVertexBuffer(int size, Vertex* vertexData);
 		};
 	}
 }

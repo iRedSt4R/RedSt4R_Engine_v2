@@ -1,4 +1,5 @@
 #pragma once
+#include "../RSIncludeOpenGL.h"
 
 namespace RedSt4R
 {
@@ -7,9 +8,13 @@ namespace RedSt4R
 		class RSTexture
 		{
 		public:
-			virtual void Bind(int bindFlag) = 0;
+			virtual void LoadTextureFromFile(char* texturePath) = 0;
+			virtual void Bind(int bindPoint) =  0;
+			virtual void GenerateMipMaps() = 0;
+			virtual void ClearTexture() = 0;
+			virtual void ClearTexture(glm::vec3 clearColor) = 0;
 
-			static RSTexture* CreateTexture(float width, float hight, int textureType, int flags);
+			static RSTexture* CreateTexture(char* texturePath, bool bGenerateMipMaps);
 		};
 	}
 }

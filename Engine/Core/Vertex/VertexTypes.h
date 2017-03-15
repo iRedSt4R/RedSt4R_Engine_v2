@@ -16,10 +16,14 @@ struct VertexBase
 
 struct Vertex
 {
+	Vertex() {}
+	Vertex(float x, float y, float z, float u, float v)
+		:position(x, y, z), texCoord(u,v) {}
+
 	vec3 position;
-	vec4 texCoord;
-	vec3 normal;
-	vec3 tangent;
+	vec2 texCoord;
+	//vec3 normal;
+	//vec3 tangent;
 };
 
 struct VertexTex

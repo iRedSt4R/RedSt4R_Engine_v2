@@ -20,6 +20,8 @@ class TriangleTest
 		RSVertexShader* vs;
 		RSPixelShader* ps;
 
+		RSTexture* texture;
+
 	public:
 		TriangleTest(GLFWwindow* pWindow);
 		~TriangleTest();

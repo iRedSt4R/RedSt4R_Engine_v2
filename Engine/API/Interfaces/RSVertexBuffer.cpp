@@ -6,7 +6,7 @@ namespace RedSt4R
 {
 	namespace API
 	{
-		RSVertexBuffer* RSVertexBuffer::CreateVertexBuffer(int size, VertexBase* vertexData)
+		RSVertexBuffer* RSVertexBuffer::CreateVertexBuffer(int size, Vertex* vertexData)
 		{
 			//if (USE_VULKAN) return new VulkanVertexShader(shaderPath);
 			if (USE_OPENGL) return new OpenGLVertexBuffer(size, vertexData);

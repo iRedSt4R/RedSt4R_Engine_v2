@@ -1,11 +1,11 @@
 #include "TriangleTest.h"
 
 
-VertexBase vertices[] = {
-	VertexBase(0.5f,  0.5f, 0.0f, 0.7f, 0.7f, 0.7f),  // Top Right
-	VertexBase(0.5f, -0.5f, 0.0f, 0.7f, 0.7f, 0.7f),  // Bottom Right
-	VertexBase(-0.5f, -0.5f, 0.0f, 0.7f, 0.7f, 0.7f),  // Bottom Left
-	VertexBase(-0.5f,  0.5f, 0.0f, 0.7f, 0.7f, 0.7f)   // Top Left 
+Vertex vertices[] = {
+	Vertex(0.5f,  0.5f, 0.0f, 1.0f, 1.0f),  // Top Right
+	Vertex(0.5f, -0.5f, 0.0f, 1.0f, 0.0f),  // Bottom Right
+	Vertex(-0.5f, -0.5f, 0.0f, 0.0f, 0.0f),  // Bottom Left
+	Vertex(-0.5f,  0.5f, 0.0f, 0.0f, 1.0f)   // Top Left 
 };
 uint32_t indices[] = {  // Note that we start from 0!
 	0, 1, 3,   // First Triangle
@@ -24,6 +24,8 @@ TriangleTest::TriangleTest(GLFWwindow* pWindow)
 	vs = RSVertexShader::CreateVertexShader("Engine/Shaders/GLSL/basicVS.glsl");
 	ps = RSPixelShader::CreatePixelShader("Engine/Shaders/GLSL/basicPS.glsl");
 
+	texture = RSTexture::CreateTexture("Assets/Textures/img_cheryl.jpg", true);
+
 	graphicsPipeline = RSGraphicsPipeline::CreateGraphicsPipeline(vb, vs, ps, ib);
 }
 
@@ -41,6 +43,7 @@ void TriangleTest::Update()
 {
 	renderer->BeginRenderer();
 	renderer->Render();
+	texture->Bind(1);
 	graphicsPipeline->Execute();
 	renderer->EndRenderer();
 }

@@ -20,6 +20,17 @@ RedSt4R::API::OpenGLGraphicsPipeline::OpenGLGraphicsPipeline(RSVertexBuffer* rsV
 		RS_ERROR("Failed Linking GLSL Shader\n" << infoLog);
 	}
 
+	glGenVertexArrays(1, &vertexArray);
+
+	glBindVertexArray(vertexArray);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->GetVertexBuffer());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->GetIndexBuffer());
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(glm::vec3)));
+		glEnableVertexAttribArray(1);
+	glBindVertexArray(0);
 }
 
 RedSt4R::API::OpenGLGraphicsPipeline::~OpenGLGraphicsPipeline()
@@ -44,14 +55,7 @@ void RedSt4R::API::OpenGLGraphicsPipeline::SetPixelShader(RSPixelShader* rsPS)
 
 void RedSt4R::API::OpenGLGraphicsPipeline::Execute()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->GetVertexBuffer());
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->GetIndexBuffer());
-
-	glVertexAttribPointer(0, 3,GL_FLOAT, GL_FALSE, sizeof(VertexBase), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexBase), (GLvoid*)(sizeof(glm::vec3)));
-	glEnableVertexAttribArray(1);
+	glBindVertexArray(vertexArray);
 	glUseProgram(shaderProgram);
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

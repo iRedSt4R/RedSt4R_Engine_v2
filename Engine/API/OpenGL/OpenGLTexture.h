@@ -1,22 +1,23 @@
 #pragma once
 #include "../Interfaces/RSTexture.h"
-#include "../../RSIncludeVulkan.h"
-#include "../../Debug/DebugMacros.h"
+#include <soil.h>
 
 namespace RedSt4R
 {
 	namespace API
 	{
-		class VkTexture : public RSTexture
+		class OpenGLTexture : public RSTexture
 		{
 		private:
-			VkImage image;
-			VkImageView imageView;
-			VkFramebuffer frameBuffer;
+			int textureWidth;
+			int textureHeight;
+			GLuint texture;
+			unsigned char* soilTexture;
 
+			
 		public:
-			VkTexture(char* texturePath, bool bGenerateMipMaps);
-			~VkTexture();
+			OpenGLTexture(char* texturePath, bool bGenerateMipMaps);
+			~OpenGLTexture();
 
 			virtual void LoadTextureFromFile(char* texturePath) override;
 			virtual void Bind(int bindPoint) override;

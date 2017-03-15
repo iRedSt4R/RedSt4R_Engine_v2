@@ -1,6 +1,6 @@
 #include "OpenGLVertexBuffer.h"
 
-RedSt4R::API::OpenGLVertexBuffer::OpenGLVertexBuffer(int size, VertexBase* pVertexData)
+RedSt4R::API::OpenGLVertexBuffer::OpenGLVertexBuffer(int size, Vertex* pVertexData)
 	:vertexBufferData(pVertexData), vertexBufferSize(size)
 {
 	glGenBuffers(1, &vertexBuffer);
