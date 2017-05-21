@@ -4,6 +4,7 @@
 #include "../../Debug/DebugMacros.h"
 #include "../RS_API.h"
 #include "VulkanCommandBuffer.h"
+#include "../../Core/Window/Window.h"
 
 namespace RedSt4R
 {

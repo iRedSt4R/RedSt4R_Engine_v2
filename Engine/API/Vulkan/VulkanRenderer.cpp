@@ -13,7 +13,7 @@ VkSemaphore RedSt4R::API::VulkanRenderer::m_Semaphore = VK_NULL_HANDLE;
 
 RedSt4R::API::VulkanRenderer::VulkanRenderer(GLFWwindow *pWindow)
 {
-	m_Window = pWindow;
+	m_Window = Window::GetGLFWWindow();
 }
 
 RedSt4R::API::VulkanRenderer::~VulkanRenderer()

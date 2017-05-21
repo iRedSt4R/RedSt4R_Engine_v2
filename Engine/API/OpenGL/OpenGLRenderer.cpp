@@ -36,7 +36,7 @@ void RedSt4R::API::OpenGLRenderer::Render()
 
 void RedSt4R::API::OpenGLRenderer::EndRenderer()
 {
-	glfwSwapBuffers(m_Window);
+	//glfwSwapBuffers(m_Window);
 }
 
 void RedSt4R::API::OpenGLRenderer::ShutDownRenderer()

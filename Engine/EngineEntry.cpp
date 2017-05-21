@@ -5,6 +5,7 @@
 #include "API/RS_API.h"
 #include "Core/Vertex/VertexTypes.h"
 #include "Tests/TriangleTest.h"
+#include "Core/Window/Window.h"
 
 /*********************** Correct Order ! *********************/
 // 1) glfwInit();											  /
@@ -17,12 +18,13 @@
 
 GLFWwindow* gameWindow;
 TriangleTest* test;
+RedSt4R::Window* window;
 
 void main()
 {
 	RedSt4R::EngineConfig::SetWindowSize(800, 600);
 
-	glfwInit();
+	/*glfwInit();
 	if (USE_VULKAN)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -40,20 +42,21 @@ void main()
 	}
 	glfwMakeContextCurrent(gameWindow);
 	glewInit();
+	*/
 
+	window = new RedSt4R::Window(800, 600, "sdfds");
 	test = new TriangleTest(gameWindow);
 	test->Prepare();
 
 	
 
-	while (!glfwWindowShouldClose(gameWindow))
+	while (!window->ShouldClose())
 	{
-		glfwPollEvents();
+		window->Clear();
 		test->Update();
+		window->Update();
 
 	}
-
-
-	glfwDestroyWindow(gameWindow);
-	glfwTerminate();
+	
+	window->Close();
 }

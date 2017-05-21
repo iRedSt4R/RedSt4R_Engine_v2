@@ -15,9 +15,11 @@ uint32_t indices[] = {  // Note that we start from 0!
 TriangleTest::TriangleTest(GLFWwindow* pWindow)
 	:window(pWindow)
 {
+
 	renderer = RSRenderer::CreateRenderer(pWindow);
 	renderer->InitRenderer();
 
+	/*
 	vb = RSVertexBuffer::CreateVertexBuffer(sizeof(vertices), vertices);
 	ib = RSIndexBuffer::CreateIndexBuffer(sizeof(indices), indices);
 
@@ -27,6 +29,7 @@ TriangleTest::TriangleTest(GLFWwindow* pWindow)
 	texture = RSTexture::CreateTexture("Assets/Textures/img_cheryl.jpg", true);
 
 	graphicsPipeline = RSGraphicsPipeline::CreateGraphicsPipeline(vb, vs, ps, ib);
+	*/
 }
 
 TriangleTest::~TriangleTest()
@@ -43,8 +46,8 @@ void TriangleTest::Update()
 {
 	renderer->BeginRenderer();
 	renderer->Render();
-	texture->Bind(1);
-	graphicsPipeline->Execute();
+	//texture->Bind(1);
+	//graphicsPipeline->Execute();
 	renderer->EndRenderer();
 }
 
@@ -52,6 +55,7 @@ void TriangleTest::Render()
 {
 
 }
+
 
 void TriangleTest::End()
 {

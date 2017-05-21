@@ -12,6 +12,7 @@ class TriangleTest
 		GLFWwindow* window;
 
 		RSRenderer* renderer;
+		/*
 		RSGraphicsPipeline* graphicsPipeline;
 
 		RSVertexBuffer* vb;
@@ -21,6 +22,7 @@ class TriangleTest
 		RSPixelShader* ps;
 
 		RSTexture* texture;
+		*/
 
 	public:
 		TriangleTest(GLFWwindow* pWindow);
