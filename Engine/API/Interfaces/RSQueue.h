@@ -1,5 +1,6 @@
 #pragma once
-#include "../RS_API.h"
+//#include "../RS_API.h"
+#include "RSCommandBuffer.h"
 
 namespace RedSt4R
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "../Config/RenderingConfig.h"
-#include "../RSIncludeVulkan.h"
-#include "RSIncludeOpenGL.h"
+//#include "../RSIncludeVulkan.h"
+//#include "RSIncludeOpenGL.h"
 
 
 #include "../Debug/DebugMacros.h"
@@ -14,4 +14,5 @@
 #include "Interfaces/RSPixelShader.h"
 #include "Interfaces/RSVertexBuffer.h"
 #include "Interfaces/RSGraphicsPipeline.h"
+#include "Interfaces/RSShader.h"
 

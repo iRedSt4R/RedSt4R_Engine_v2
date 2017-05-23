@@ -10,6 +10,7 @@ VkDevice RedSt4R::API::VulkanRenderer::m_Device = VK_NULL_HANDLE;
 VkQueue RedSt4R::API::VulkanRenderer::m_Queue = VK_NULL_HANDLE;
 VkFence RedSt4R::API::VulkanRenderer::m_Fence = VK_NULL_HANDLE;
 VkSemaphore RedSt4R::API::VulkanRenderer::m_Semaphore = VK_NULL_HANDLE;
+VkSurfaceFormatKHR RedSt4R::API::VulkanRenderer::m_SurfaceFormat = {};
 
 RedSt4R::API::VulkanRenderer::VulkanRenderer(GLFWwindow *pWindow)
 {

@@ -1,13 +1,14 @@
 #include "RSGraphicsPipeline.h"
-#include "../OpenGL/OpenGLGraphicsPipeline.h"
+#include "../Vulkan/VulkanGraphicsPipeline.h"
 
 namespace RedSt4R
 {
 	namespace API
 	{
-		RSGraphicsPipeline* RedSt4R::API::RSGraphicsPipeline::CreateGraphicsPipeline(RSVertexBuffer* rsVB, RSVertexShader* rsVS, RSPixelShader* rsPS, RSIndexBuffer* rsIB)
+		RSGraphicsPipeline* RedSt4R::API::RSGraphicsPipeline::CreateGraphicsPipeline(RSShader* shader, RS_DESC_GRAPHICSPIPELINE* gpDesc)
 		{
-			if (USE_OPENGL) return new OpenGLGraphicsPipeline(rsVB, rsVS, rsPS, rsIB);
+			//TODO: if (USE_OPENGL) return new OpenGLGraphicsPipeline(rsVB, rsVS, rsPS, rsIB);
+			if (USE_VULKAN) return new VulkanGraphicsPipeline(shader, gpDesc);
 		}
 	}
 }

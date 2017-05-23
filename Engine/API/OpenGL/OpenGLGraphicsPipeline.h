@@ -1,6 +1,6 @@
 #pragma once
 #include "../RSIncludeOpenGL.h"
-#include "../Interfaces/RSGraphicsPipeline.h"
+//#include "../Interfaces/RSGraphicsPipeline.h"
 #include "../RS_API.h"
 #include "../../Config/RenderingConfig.h"
 #include "OpenGLVertexBuffer.h"
@@ -28,10 +28,12 @@ namespace RedSt4R
 			GLuint vertexArray;
 
 		public:
+/*
 			virtual void SetVertexBuffer(RSVertexBuffer* rsVB) override;
 			virtual void SetVertexShader(RSVertexShader* rsVS) override;
 			virtual void SetPixelShader(RSPixelShader* rsPS) override;
 			virtual void Execute() override;
+*/			
 
 
 		public:

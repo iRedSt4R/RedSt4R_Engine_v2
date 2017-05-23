@@ -38,24 +38,3 @@ RedSt4R::API::OpenGLGraphicsPipeline::~OpenGLGraphicsPipeline()
 
 }
 
-void RedSt4R::API::OpenGLGraphicsPipeline::SetVertexBuffer(RSVertexBuffer* rsVB)
-{
-	
-}
-
-void RedSt4R::API::OpenGLGraphicsPipeline::SetVertexShader(RSVertexShader* rsVS)
-{
-	
-}
-
-void RedSt4R::API::OpenGLGraphicsPipeline::SetPixelShader(RSPixelShader* rsPS)
-{
-	
-}
-
-void RedSt4R::API::OpenGLGraphicsPipeline::Execute()
-{
-	glBindVertexArray(vertexArray);
-	glUseProgram(shaderProgram);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}

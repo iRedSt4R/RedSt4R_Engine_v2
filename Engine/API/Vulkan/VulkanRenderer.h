@@ -45,7 +45,7 @@ namespace RedSt4R
 			std::vector<VkFramebuffer> m_vFrameBuffer;
 
 			VkSurfaceCapabilitiesKHR m_SurfaceCapabilities = {};
-			VkSurfaceFormatKHR  m_SurfaceFormat = {};
+			static VkSurfaceFormatKHR  m_SurfaceFormat;
 
 			VkRect2D rect2D;
 			VkClearValue clearValue;
@@ -66,6 +66,7 @@ namespace RedSt4R
 			void ShutDownRenderer() override;
 
 			__inline VkDevice GetVkDevice() { return m_Device; }
+			//__inline static VkSurfaceFormatKHR GetSurfaceFormat() { return m_SurfaceFormat.format; }
 
 		private:
 
