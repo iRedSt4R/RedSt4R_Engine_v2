@@ -9,10 +9,10 @@ namespace RedSt4R
 		{
 		public:
 			VkDevice device;
-			VkRenderPass renderPass;
 			VkSurfaceFormatKHR surfaceFormat;
 			VkRect2D rect2D;
 			VkClearValue clearValue;
+			VkViewport viewport;
 		};
 
 

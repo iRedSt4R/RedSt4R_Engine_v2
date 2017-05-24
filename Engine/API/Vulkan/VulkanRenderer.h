@@ -6,6 +6,7 @@
 #include "VulkanCommandBuffer.h"
 #include "../../Core/Window/Window.h"
 #include "VulkanShader.h"
+#include "VulkanGraphicsPipeline.h"
 
 namespace RedSt4R
 {
@@ -53,6 +54,7 @@ namespace RedSt4R
 			RSShader* testShader;
 
 			VkPipeline m_Pipeline;
+			RSGraphicsPipeline* graphicsPip;
 
 		public:
 			VulkanRenderer(GLFWwindow *pWindow);
