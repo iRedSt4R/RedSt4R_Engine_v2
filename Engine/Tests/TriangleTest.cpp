@@ -12,7 +12,7 @@ uint32_t indices[] = {  // Note that we start from 0!
 	1, 2, 3    // Second Triangle
 };
 
-TriangleTest::TriangleTest(GLFWwindow* pWindow)
+TriangleTest::TriangleTest(Window* pWindow)
 	:window(pWindow)
 {
 

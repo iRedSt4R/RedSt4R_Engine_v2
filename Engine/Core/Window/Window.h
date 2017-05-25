@@ -1,10 +1,16 @@
 #pragma once
 
 #include "../../API/RSIncludeOpenGL.h"
+#include "../../RSIncludeVulkan.h"
 #include "../../Config/RenderingConfig.h"
+#include "../../Debug/DebugMacros.h"
+#include "../../API/Vulkan/VulkanRenderer.h"
+
 
 namespace RedSt4R
 {
+	namespace API{ class VulkanRenderer; }
+
 	class Window
 	{
 	private:
@@ -12,6 +18,11 @@ namespace RedSt4R
 		char* m_WindowName;
 
 		static GLFWwindow* m_Window;
+
+		//Vulkan Surface
+		VkSurfaceKHR m_VulkanSurface;
+		VkSurfaceCapabilitiesKHR m_VulkanSurfaceCapabilities = {};
+		VkSurfaceFormatKHR  m_VulaknSurfaceFormat;
 
 
 	public:
@@ -23,7 +34,12 @@ namespace RedSt4R
 		void Update();
 		void Close();
 
-		__inline static GLFWwindow* GetGLFWWindow() { return m_Window; }
+		void CreateVulkanSurface(VkInstance pInstance, VkDevice pDevice, VkPhysicalDevice pPhysicalDevice);
 
+	public:
+		__inline static GLFWwindow* GetGLFWWindow() { return m_Window; }
+		__inline VkSurfaceKHR GetVkSurface() { return m_VulkanSurface; }
+		__inline VkSurfaceFormatKHR GetVkSurfaceFormat() { return m_VulaknSurfaceFormat; }
+		__inline VkSurfaceKHR GetVkSurface() { return m_VulkanSurface; }
 	};
 }

@@ -7,14 +7,16 @@ VkResult r;
 
 int RedSt4R::API::VulkanRenderer::queueFamilyIndexWithGB = 0;
 VkDevice RedSt4R::API::VulkanRenderer::m_Device = VK_NULL_HANDLE;
+VkInstance RedSt4R::API::VulkanRenderer::m_Instance = VK_NULL_HANDLE;
 VkQueue RedSt4R::API::VulkanRenderer::m_Queue = VK_NULL_HANDLE;
 VkFence RedSt4R::API::VulkanRenderer::m_Fence = VK_NULL_HANDLE;
 VkSemaphore RedSt4R::API::VulkanRenderer::m_Semaphore = VK_NULL_HANDLE;
 VkSurfaceFormatKHR RedSt4R::API::VulkanRenderer::m_SurfaceFormat = {};
 
-RedSt4R::API::VulkanRenderer::VulkanRenderer(GLFWwindow *pWindow)
+RedSt4R::API::VulkanRenderer::VulkanRenderer(Window* pWindow)
+	:window(pWindow)
 {
-	m_Window = Window::GetGLFWWindow();
+	m_Window = pWindow->GetGLFWWindow();
 }
 
 RedSt4R::API::VulkanRenderer::~VulkanRenderer()
@@ -47,77 +49,44 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	if (r != VK_SUCCESS) RS_ERROR("Failed creating Vulkan Instance!");
 
 	//---------------------- Check For Supported GPUs ------------------------//
-	uint32_t deviceCount;
-	vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
-	vPhysicalDevices.resize(deviceCount);
-	vkEnumeratePhysicalDevices(m_Instance, &deviceCount, vPhysicalDevices.data());
-	RS_LOG("Number of Supported Devices: " << deviceCount);
-
-	//------------------- Check for queue Family Index -----------------------//
-	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(vPhysicalDevices[0], &queueFamilyCount, nullptr);
-	vQueueFamilyProperties.resize(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(vPhysicalDevices[0], &queueFamilyCount, vQueueFamilyProperties.data());
-
-	for (int i = 0; i < queueFamilyCount; i++)
-	{
-		if (vQueueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-		{
-			queueFamilyIndexWithGB = i;
-			RS_WARNING("Found Queue Family Index with 'VK_QUEUE_GRAPHICS_BIT' at index: " << i);
-		}
-	}
-
-	float queuePriorities[]{ 1.0f };
-
-	VkDeviceQueueCreateInfo deviceQueueInfo = {};
-	deviceQueueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	deviceQueueInfo.pNext = nullptr;
-	deviceQueueInfo.flags = 0;
-	deviceQueueInfo.pQueuePriorities = queuePriorities;
-	deviceQueueInfo.queueFamilyIndex = queueFamilyIndexWithGB;
-	deviceQueueInfo.queueCount = 1;
-
-	VkDeviceCreateInfo deviceinfo = {};
-	deviceinfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceinfo.pNext = nullptr;
-	deviceinfo.queueCreateInfoCount = 1;
-	deviceinfo.pQueueCreateInfos = &deviceQueueInfo;
-
-	r = vkCreateDevice(vPhysicalDevices[0], &deviceinfo, nullptr, &m_Device);
-	if (r != VK_SUCCESS) RS_ERROR("Failed Creating Vulkan Device!");
-	VkBase::device = m_Device;
+	device = new VulkanDevice(EDeviceType::BestGPU, false);
+	m_Device = device->GetVkDevice();
+	vPhysicalDevices = device->GetVkPhysicalDevices();
 
 	vkGetDeviceQueue(m_Device, queueFamilyIndexWithGB, 0, &m_Queue);
 
 	//------------------------- Create Win32 Surface ---------------------//
-	VkWin32SurfaceCreateInfoKHR win32surfaceinfo = {};
-	win32surfaceinfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	win32surfaceinfo.hwnd = glfwGetWin32Window(m_Window);
-	win32surfaceinfo.hinstance = GetModuleHandle(nullptr);
-	auto CreateWin32SurfaceKHR = (PFN_vkCreateWin32SurfaceKHR)vkGetInstanceProcAddr(m_Instance, "vkCreateWin32SurfaceKHR");
 
-	r = CreateWin32SurfaceKHR(m_Instance, &win32surfaceinfo, nullptr, &m_Surface);
-	if (r != VK_SUCCESS) RS_ERROR("Failed Creating Win32Surface!");
-
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vPhysicalDevices[0], m_Surface, &m_SurfaceCapabilities);
-
-	//------------------------- Create SwapChain -------------------------//
-	std::vector<VkSurfaceFormatKHR> formats;
-	uint32_t format_count = 0;
-	vkGetPhysicalDeviceSurfaceFormatsKHR(vPhysicalDevices[0], m_Surface, &format_count, nullptr);
-	formats.resize(format_count);
-	vkGetPhysicalDeviceSurfaceFormatsKHR(vPhysicalDevices[0], m_Surface, &format_count, formats.data());
-
-	if (formats[0].format == VK_FORMAT_UNDEFINED) 
-	{
-		m_SurfaceFormat.format = VK_FORMAT_B8G8R8A8_UNORM;
-		m_SurfaceFormat.colorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-	}
-	else 
-	{
-		m_SurfaceFormat = formats[0];
-	}
+	window->CreateVulkanSurface(m_Instance, m_Device, vPhysicalDevices[0]);
+/*
+// 	VkWin32SurfaceCreateInfoKHR win32surfaceinfo = {};
+// 	win32surfaceinfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+// 	win32surfaceinfo.hwnd = glfwGetWin32Window(m_Window);
+// 	win32surfaceinfo.hinstance = GetModuleHandle(nullptr);
+// 	auto CreateWin32SurfaceKHR = (PFN_vkCreateWin32SurfaceKHR)vkGetInstanceProcAddr(m_Instance, "vkCreateWin32SurfaceKHR");
+// 
+// 	r = CreateWin32SurfaceKHR(m_Instance, &win32surfaceinfo, nullptr, &m_Surface);
+// 	if (r != VK_SUCCESS) RS_ERROR("Failed Creating Win32Surface!");
+// 
+// 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vPhysicalDevices[0], m_Surface, &m_SurfaceCapabilities);
+// 
+// 	//------------------------- Create SwapChain -------------------------//
+// 	std::vector<VkSurfaceFormatKHR> formats;
+// 	uint32_t format_count = 0;
+// 	vkGetPhysicalDeviceSurfaceFormatsKHR(vPhysicalDevices[0], m_Surface, &format_count, nullptr);
+// 	formats.resize(format_count);
+// 	vkGetPhysicalDeviceSurfaceFormatsKHR(vPhysicalDevices[0], m_Surface, &format_count, formats.data());
+// 
+// 	if (formats[0].format == VK_FORMAT_UNDEFINED) 
+// 	{
+// 		m_SurfaceFormat.format = VK_FORMAT_B8G8R8A8_UNORM;
+// 		m_SurfaceFormat.colorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+// 	}
+// 	else 
+// 	{
+// 		m_SurfaceFormat = formats[0];
+// 	}
+*/
 
 	VkSwapchainCreateInfoKHR scCreateInfo = {};
 	scCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -174,8 +143,8 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 
 	rect2D.offset.x = 0;
 	rect2D.offset.y = 0;
-	rect2D.extent.height = 600;
-	rect2D.extent.width = 800;
+	rect2D.extent.height = EngineConfig::GetWindowHeight();
+	rect2D.extent.width = EngineConfig::GetWindowWidth();
 
 	clearValue.color.float32[0] = 0.2f;
 	clearValue.color.float32[1] = 0.2f;
@@ -214,8 +183,8 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		framecf.renderPass = ((VulkanGraphicsPipeline*)graphicsPip)->GetVkRenderPass();
 		framecf.attachmentCount = 1;
 		framecf.pAttachments = &m_vSwapChainImageView[i];
-		framecf.width = 800;
-		framecf.height = 600;
+		framecf.width = EngineConfig::GetWindowWidth();
+		framecf.height = EngineConfig::GetWindowHeight();
 		framecf.layers = 1;
 		r = vkCreateFramebuffer(m_Device, &framecf, nullptr, &m_vFrameBuffer[i]);
 		if (r != VK_SUCCESS) RS_ERROR("Failed Creating FrameBuffer!");

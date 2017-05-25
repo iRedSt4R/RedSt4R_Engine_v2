@@ -18,8 +18,6 @@ namespace RedSt4R
 			~VulkanQueue();
 
 			virtual void SumbitCommandBuffer(RSCommandBuffer* cmdBuffer) override;
-
-			//__inline static VulkanCommandBuffer* GetVulkanCommandBuffer
 			__inline VkQueue GetVkQueue() { return m_Queue; }
 		};
 

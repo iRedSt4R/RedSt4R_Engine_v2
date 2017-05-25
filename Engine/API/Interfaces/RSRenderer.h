@@ -1,5 +1,6 @@
 #pragma once
 #include "../../RSIncludeVulkan.h"
+#include "../../Core/Window/Window.h"
 
 namespace RedSt4R
 {
@@ -15,7 +16,7 @@ namespace RedSt4R
 			virtual void EndRenderer() = 0;
 			virtual void ShutDownRenderer() = 0;
 
-			static RSRenderer* CreateRenderer(GLFWwindow* pWindow);
+			static RSRenderer* CreateRenderer(Window* pWindow);
 		};
 	}
 }

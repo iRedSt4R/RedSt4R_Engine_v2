@@ -7,11 +7,15 @@
 #include "../../Core/Window/Window.h"
 #include "VulkanShader.h"
 #include "VulkanGraphicsPipeline.h"
+#include "VulkanDevice.h"
+
 
 namespace RedSt4R
 {
 	namespace API
 	{
+		class VulkanDevice;
+
 		class VulkanRenderer : public RSRenderer
 		{
 		public:
@@ -31,7 +35,7 @@ namespace RedSt4R
 			bool bIsDestroyed = false;
 
 
-			VkInstance					m_Instance	= VK_NULL_HANDLE;	
+			static VkInstance			m_Instance;	
 			static VkQueue				m_Queue;
 			static VkFence				m_Fence;
 			static VkSemaphore			m_Semaphore;
@@ -55,9 +59,11 @@ namespace RedSt4R
 
 			VkPipeline m_Pipeline;
 			RSGraphicsPipeline* graphicsPip;
+			VulkanDevice* device;
+			Window* window;
 
 		public:
-			VulkanRenderer(GLFWwindow *pWindow);
+			VulkanRenderer(Window* pWindow);
 			~VulkanRenderer();
 		
 			void InitRenderer() override;
@@ -68,6 +74,8 @@ namespace RedSt4R
 			void ShutDownRenderer() override;
 
 			__inline VkDevice GetVkDevice() { return m_Device; }
+			__inline static VkInstance GetVkInstance() { return m_Instance; }
+			//__inline VulkanRenderer* GetPointer() { return this; }
 			//__inline static VkSurfaceFormatKHR GetSurfaceFormat() { return m_SurfaceFormat.format; }
 
 		private:

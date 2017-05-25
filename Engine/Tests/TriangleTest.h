@@ -2,6 +2,7 @@
 
 #include "../API/RS_API.h"
 #include "../Core/Vertex/VertexTypes.h"
+#include "../Core/Window/Window.h"
 
 using namespace RedSt4R;
 using namespace API;
@@ -9,7 +10,7 @@ using namespace API;
 class TriangleTest
 {
 	private:
-		GLFWwindow* window;
+		Window* window;
 
 		RSRenderer* renderer;
 		/*
@@ -25,7 +26,7 @@ class TriangleTest
 		*/
 
 	public:
-		TriangleTest(GLFWwindow* pWindow);
+		TriangleTest(Window* pWindow);
 		~TriangleTest();
 
 		void Prepare();
