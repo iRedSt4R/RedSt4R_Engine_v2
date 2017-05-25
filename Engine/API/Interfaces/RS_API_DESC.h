@@ -1,5 +1,6 @@
 #pragma once
 #include "../../RSIncludeVulkan.h"
+#include "RSVertexBuffer.h"
 
 namespace RedSt4R
 {
@@ -13,6 +14,7 @@ namespace RedSt4R
 			VkRect2D rect2D;
 			VkClearValue clearValue;
 			VkViewport viewport;
+			RSVertexBuffer* vertexBuffer;
 		};
 
 

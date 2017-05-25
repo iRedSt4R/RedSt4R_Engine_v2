@@ -1,8 +1,12 @@
 #pragma once
-#include "../RSIncludeOpenGL.h"
-#include "../../Config/RenderingConfig.h"
-#include "../../Debug/DebugMacros.h"
 #include "../../Core/Vertex/VertexTypes.h"
+#include "RSDevice.h"
+
+/*enum class EVertexType
+{
+	P, PC, PT, PTN
+};
+*/
 
 namespace RedSt4R
 {
@@ -11,7 +15,8 @@ namespace RedSt4R
 		class RSVertexBuffer
 		{
 		public:
-			static RSVertexBuffer* CreateVertexBuffer(int size, Vertex* vertexData);
+			//static RSVertexBuffer* CreateVertexBuffer(int size, Vertex* vertexData);
+			static RSVertexBuffer* CreateVertexBuffer(RSDevice* pDevice, VertexColor* vertexData);
 		};
 	}
 }

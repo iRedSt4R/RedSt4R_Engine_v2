@@ -34,12 +34,13 @@ RedSt4R::API::VulkanGraphicsPipeline::VulkanGraphicsPipeline(RSShader* shader, R
 	auto r = vkCreateRenderPass(gpDesc->device, &renderPassInfo, nullptr, &m_RenderPass);
 	if (r != VK_SUCCESS) RS_ERROR("Failed Creating RenderPass!");
 
+	//TODO:
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
-	vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.pVertexBindingDescriptions = &((VulkanVertexBuffer*)(gpDesc->vertexBuffer))->GetVkVertexInputBindDesc(); // Optional
+	vertexInputInfo.vertexAttributeDescriptionCount = 2;
+	vertexInputInfo.pVertexAttributeDescriptions = (((VulkanVertexBuffer*)(gpDesc->vertexBuffer))->GetVkVertexInputAttDesc()).data(); // Optional
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

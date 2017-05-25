@@ -13,7 +13,7 @@ VkFence RedSt4R::API::VulkanRenderer::m_Fence = VK_NULL_HANDLE;
 VkSemaphore RedSt4R::API::VulkanRenderer::m_Semaphore = VK_NULL_HANDLE;
 VkSurfaceFormatKHR RedSt4R::API::VulkanRenderer::m_SurfaceFormat = {};
 
-RedSt4R::API::VulkanRenderer::VulkanRenderer(Window* pWindow)
+RedSt4R::API::VulkanRenderer::VulkanRenderer(RedSt4R::Window* pWindow)
 	:window(pWindow)
 {
 	m_Window = pWindow->GetGLFWWindow();
@@ -58,42 +58,13 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	//------------------------- Create Win32 Surface ---------------------//
 
 	window->CreateVulkanSurface(m_Instance, m_Device, vPhysicalDevices[0]);
-/*
-// 	VkWin32SurfaceCreateInfoKHR win32surfaceinfo = {};
-// 	win32surfaceinfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-// 	win32surfaceinfo.hwnd = glfwGetWin32Window(m_Window);
-// 	win32surfaceinfo.hinstance = GetModuleHandle(nullptr);
-// 	auto CreateWin32SurfaceKHR = (PFN_vkCreateWin32SurfaceKHR)vkGetInstanceProcAddr(m_Instance, "vkCreateWin32SurfaceKHR");
-// 
-// 	r = CreateWin32SurfaceKHR(m_Instance, &win32surfaceinfo, nullptr, &m_Surface);
-// 	if (r != VK_SUCCESS) RS_ERROR("Failed Creating Win32Surface!");
-// 
-// 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vPhysicalDevices[0], m_Surface, &m_SurfaceCapabilities);
-// 
-// 	//------------------------- Create SwapChain -------------------------//
-// 	std::vector<VkSurfaceFormatKHR> formats;
-// 	uint32_t format_count = 0;
-// 	vkGetPhysicalDeviceSurfaceFormatsKHR(vPhysicalDevices[0], m_Surface, &format_count, nullptr);
-// 	formats.resize(format_count);
-// 	vkGetPhysicalDeviceSurfaceFormatsKHR(vPhysicalDevices[0], m_Surface, &format_count, formats.data());
-// 
-// 	if (formats[0].format == VK_FORMAT_UNDEFINED) 
-// 	{
-// 		m_SurfaceFormat.format = VK_FORMAT_B8G8R8A8_UNORM;
-// 		m_SurfaceFormat.colorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-// 	}
-// 	else 
-// 	{
-// 		m_SurfaceFormat = formats[0];
-// 	}
-*/
-
+	
 	VkSwapchainCreateInfoKHR scCreateInfo = {};
 	scCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	scCreateInfo.surface = m_Surface;
+	scCreateInfo.surface = window->GetVkSurface();
 	scCreateInfo.minImageCount = swapChainImages; //swapChainImages Buffering
-	scCreateInfo.imageFormat = m_SurfaceFormat.format;
-	scCreateInfo.imageColorSpace = m_SurfaceFormat.colorSpace;
+	scCreateInfo.imageFormat = window->GetVkSurfaceFormat().format;
+	scCreateInfo.imageColorSpace = window->GetVkSurfaceFormat().colorSpace;
 	scCreateInfo.imageExtent.width = EngineConfig::GetWindowWidth();
 	scCreateInfo.imageExtent.height = EngineConfig::GetWindowHeight();
 	scCreateInfo.imageArrayLayers = 1;
@@ -123,7 +94,7 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		ivCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		ivCreateInfo.image = m_vSwapChainImage[i];
 		ivCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		ivCreateInfo.format = m_SurfaceFormat.format;
+		ivCreateInfo.format = window->GetVkSurfaceFormat().format;
 		ivCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 		ivCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 		ivCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -137,6 +108,8 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		vkCreateImageView(m_Device, &ivCreateInfo, nullptr, &m_vSwapChainImageView[i]);
 		if (r != VK_SUCCESS) RS_ERROR("Failed Creating ImageView From SwapChain Images!");
 	}
+
+	vertexBuffer = new VulkanVertexBuffer(device, nullptr);
 
 	//----------------------- Create Render Pass -----------------------//
 	// TODO: Add Depth/Stencil
@@ -169,9 +142,12 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	gpDesc.clearValue = clearValue;
 	gpDesc.device = m_Device;
 	gpDesc.rect2D = rect2D;
-	gpDesc.surfaceFormat = m_SurfaceFormat;
+	gpDesc.surfaceFormat = window->GetVkSurfaceFormat();
 	gpDesc.viewport = viewport;
+	gpDesc.vertexBuffer = vertexBuffer;
 
+
+	
 	graphicsPip = RSGraphicsPipeline::CreateGraphicsPipeline(testShader, &gpDesc);
 
 	m_vFrameBuffer.resize(swapChainImages);

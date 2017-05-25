@@ -4,6 +4,7 @@
 
 namespace RedSt4R
 {
+
 	namespace API
 	{
 		class RSRenderer
@@ -16,7 +17,7 @@ namespace RedSt4R
 			virtual void EndRenderer() = 0;
 			virtual void ShutDownRenderer() = 0;
 
-			static RSRenderer* CreateRenderer(Window* pWindow);
+			static RSRenderer* CreateRenderer(RedSt4R::Window* pWindow);
 		};
 	}
 }

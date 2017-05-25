@@ -8,6 +8,9 @@
 #include "VulkanShader.h"
 #include "VulkanGraphicsPipeline.h"
 #include "VulkanDevice.h"
+#include "../Interfaces/RSRenderer.h"
+#include "VulkanBuffer.h"
+
 
 
 namespace RedSt4R
@@ -15,12 +18,13 @@ namespace RedSt4R
 	namespace API
 	{
 		class VulkanDevice;
+		class VulkanVertexBuffer;
 
 		class VulkanRenderer : public RSRenderer
 		{
 		public:
 			GLFWwindow*			m_Window			= nullptr;
-
+			Window* window;
 			std::vector<VkPhysicalDevice>			vPhysicalDevices;
 			std::vector<VkQueueFamilyProperties>	vQueueFamilyProperties;
 
@@ -60,10 +64,10 @@ namespace RedSt4R
 			VkPipeline m_Pipeline;
 			RSGraphicsPipeline* graphicsPip;
 			VulkanDevice* device;
-			Window* window;
+			VulkanVertexBuffer* vertexBuffer;
 
 		public:
-			VulkanRenderer(Window* pWindow);
+			VulkanRenderer(RedSt4R::Window* pWindow);
 			~VulkanRenderer();
 		
 			void InitRenderer() override;
@@ -77,10 +81,6 @@ namespace RedSt4R
 			__inline static VkInstance GetVkInstance() { return m_Instance; }
 			//__inline VulkanRenderer* GetPointer() { return this; }
 			//__inline static VkSurfaceFormatKHR GetSurfaceFormat() { return m_SurfaceFormat.format; }
-
-		private:
-
-
 
 		};
 	}

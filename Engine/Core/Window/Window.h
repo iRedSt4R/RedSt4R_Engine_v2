@@ -4,12 +4,12 @@
 #include "../../RSIncludeVulkan.h"
 #include "../../Config/RenderingConfig.h"
 #include "../../Debug/DebugMacros.h"
-#include "../../API/Vulkan/VulkanRenderer.h"
+#include <vector>
 
 
 namespace RedSt4R
 {
-	namespace API{ class VulkanRenderer; }
+	//namespace API{ class VulkanRenderer; }
 
 	class Window
 	{
@@ -40,6 +40,5 @@ namespace RedSt4R
 		__inline static GLFWwindow* GetGLFWWindow() { return m_Window; }
 		__inline VkSurfaceKHR GetVkSurface() { return m_VulkanSurface; }
 		__inline VkSurfaceFormatKHR GetVkSurfaceFormat() { return m_VulaknSurfaceFormat; }
-		__inline VkSurfaceKHR GetVkSurface() { return m_VulkanSurface; }
 	};
 }

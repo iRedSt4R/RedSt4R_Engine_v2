@@ -26,6 +26,16 @@ struct Vertex
 	//vec3 tangent;
 };
 
+struct VertexColor
+{
+	VertexColor() {}
+	VertexColor(float x, float y, float z, float r, float g, float b)
+		:position(x, y, z), color(r, g, b) {}
+
+	vec3 position;
+	vec3 color;
+};
+
 struct VertexTex
 {
 	vec3 position;
