@@ -22,7 +22,7 @@ RedSt4R::Window* window;
 
 void main()
 {
-	window = new RedSt4R::Window(1100, 500, "sdfds");
+	window = new RedSt4R::Window(1200, 700, "sdfds");
 	test = new TriangleTest(window);
 	test->Prepare();
 

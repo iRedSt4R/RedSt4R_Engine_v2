@@ -1,6 +1,12 @@
 #include "VulkanRenderer.h"
 #include "VkBase.h"
 
+VertexColor vertices[] = { // Top Right
+	VertexColor(0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f),  // Bottom Right
+	VertexColor(0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f),  // Bottom Left
+	VertexColor(-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f)   // Top Left 
+};
+
 using namespace RedSt4R;
 
 VkResult r;
@@ -109,7 +115,7 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		if (r != VK_SUCCESS) RS_ERROR("Failed Creating ImageView From SwapChain Images!");
 	}
 
-	vertexBuffer = new VulkanVertexBuffer(device, nullptr);
+	vertexBuffer = new VulkanVertexBuffer(device, vertices);
 
 	//----------------------- Create Render Pass -----------------------//
 	// TODO: Add Depth/Stencil
@@ -203,9 +209,12 @@ void RedSt4R::API::VulkanRenderer::Render()
 	renderPassBeginInfo.clearValueCount = 1;
 	renderPassBeginInfo.pClearValues = &clearValue;
 
+	VkDeviceSize offsets[] = { 0 };
+
 	m_commandbuf->Begin();
 	vkCmdBeginRenderPass(((VulkanCommandBuffer*)m_commandbuf)->GetVkCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	vkCmdBindPipeline(((VulkanCommandBuffer*)m_commandbuf)->m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ((VulkanGraphicsPipeline*)graphicsPip)->GetVkPipeline());
+	vkCmdBindVertexBuffers(((VulkanCommandBuffer*)m_commandbuf)->m_CommandBuffer, 0, 1, vertexBuffer->GetVkBuffer(), offsets);
 	vkCmdDraw(((VulkanCommandBuffer*)m_commandbuf)->m_CommandBuffer, 3, 1, 0, 0);
 	m_commandbuf->End();
 	

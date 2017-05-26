@@ -15,7 +15,11 @@ namespace RedSt4R
 		class VulkanDevice;
 		class VulkanVertexBuffer : public RSVertexBuffer
 		{
+			VulkanDevice* vulkanDevice;
+
 			VkBuffer m_VertexBuffer = VK_NULL_HANDLE;
+			VkDeviceMemory m_DeviceMemory;
+
 			VkVertexInputBindingDescription bindingDescription = {};
 			std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
 
@@ -25,9 +29,12 @@ namespace RedSt4R
 			VulkanVertexBuffer(VulkanDevice* pDevice, VertexColor* vertexData);
 			~VulkanVertexBuffer();
 
+		private:
+
+		public:
 			__inline VkVertexInputBindingDescription GetVkVertexInputBindDesc() { return bindingDescription; }
 			__inline std::array<VkVertexInputAttributeDescription, 2> GetVkVertexInputAttDesc() { return attributeDescriptions; }
-			__inline VkBuffer GetVkBuffer() { return m_VertexBuffer; }
+			__inline VkBuffer* GetVkBuffer() { return &m_VertexBuffer; }
 		};
 	}
 }

@@ -13,6 +13,9 @@ class TriangleTest
 		Window* window;
 
 		RSRenderer* renderer;
+		RSCommandBuffer* commandBuffer;
+		RSVertexBuffer* vertexBuffer;
+
 		/*
 		RSGraphicsPipeline* graphicsPipeline;
 
