@@ -134,7 +134,7 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	m_commandBuf2 = new VulkanCommandBuffer(1);
 
 	//---------------------- Creating Test Shader ----------------------------//
-	testShader = RSShader::CreateShader("Shaders/vert.spv", "Shaders/frag.spv");
+	testShader = new VulkanShader("Shaders/vert.spv", "Shaders/frag.spv");
 
 	VkViewport viewport = {};
 	viewport.x = 0.0f;
@@ -215,17 +215,17 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	vkCreateSemaphore(device->GetVkDevice(), &sCreateInfo, nullptr, &m_Semaphore);
 
 	m_commandbuf->Begin();
-	m_commandbuf->rsCmdBeginRenderPass(graphicsPip, 0);
-	m_commandbuf->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
-	m_commandbuf->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
-	m_commandbuf->rsCmdDraw(3, 0);
+		m_commandbuf->rsCmdBeginRenderPass(graphicsPip, 0);
+		m_commandbuf->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
+		m_commandbuf->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
+		m_commandbuf->rsCmdDraw(3, 0);
 	m_commandbuf->End();
 
 	m_commandBuf2->Begin();
-	m_commandBuf2->rsCmdBeginRenderPass(graphicsPip, 1);
-	m_commandBuf2->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
-	m_commandBuf2->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
-	m_commandBuf2->rsCmdDraw(3, 0);
+		m_commandBuf2->rsCmdBeginRenderPass(graphicsPip, 1);
+		m_commandBuf2->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
+		m_commandBuf2->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
+		m_commandBuf2->rsCmdDraw(3, 0);
 	m_commandBuf2->End();
 
 
@@ -246,6 +246,7 @@ void RedSt4R::API::VulkanRenderer::Update()
 void RedSt4R::API::VulkanRenderer::Render()
 {
 	
+	//For Double Buffering Only
 	if (currentBackBufferIndex == 0)
 	{
 		m_commandbuf->SubmitToQueue(m_Queue);
