@@ -5,6 +5,7 @@
 //#include "../Interfaces/RSRenderer.h"
 //#include "../RS_API.h"
 #include "VulkanShader.h"
+#include <array>
 
 class VulkanShader;
 
@@ -18,6 +19,7 @@ namespace RedSt4R
 			VkPipeline m_Pipeline;
 			VkRect2D m_Rect2D;
 			VkRenderPass m_RenderPass;
+			std::array<VkRenderPassBeginInfo, 2> m_RenderPassBeginInfo;
 			VkPipelineLayout m_PipelineLayout;
 
 			VulkanShader* m_Shader;
@@ -28,6 +30,7 @@ namespace RedSt4R
 
 			__inline VkPipeline GetVkPipeline() { return m_Pipeline; }
 			__inline VkRenderPass GetVkRenderPass() { return m_RenderPass; }
+			__inline VkRenderPassBeginInfo GetVkRenderPassBeginInfo(uint32_t frameBufferIndex) { return m_RenderPassBeginInfo[frameBufferIndex]; }
 
 		};
 	}

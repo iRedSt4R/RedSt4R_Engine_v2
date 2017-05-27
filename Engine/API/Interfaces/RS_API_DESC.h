@@ -14,7 +14,9 @@ namespace RedSt4R
 			VkRect2D rect2D;
 			VkClearValue clearValue;
 			VkViewport viewport;
+			VkFramebuffer* frameBuffer;
 			RSVertexBuffer* vertexBuffer;
+			VkRenderPass renderPass;
 		};
 
 

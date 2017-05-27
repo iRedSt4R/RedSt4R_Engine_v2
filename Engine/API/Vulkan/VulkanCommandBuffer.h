@@ -14,6 +14,16 @@ namespace RedSt4R
 			VkCommandBufferBeginInfo cbBeginInfo = {};
 			VkSubmitInfo submitInfo = {};
 
+
+			virtual void rsCmdBindVertexBuffers(RSVertexBuffer* pVertexBuffers, uint32_t firstBinding, uint32_t bindingCount, int offsets) override;
+			virtual void rsCmdBindPipeline(RSGraphicsPipeline* pGraphicsPipeline, EPipelineBindPoint bindPoint) override;
+
+
+			virtual void rsCmdBeginRenderPass(RSGraphicsPipeline* pGraphicsPipeline, uint32_t frameBufferIndex) override;
+
+
+			virtual void rsCmdDraw(uint32_t vertexCount, uint32_t firstVertex) override;
+
 		public:
 			VulkanCommandBuffer(float flags);
 			~VulkanCommandBuffer();

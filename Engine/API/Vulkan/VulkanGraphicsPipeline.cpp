@@ -4,35 +4,37 @@ RedSt4R::API::VulkanGraphicsPipeline::VulkanGraphicsPipeline(RSShader* shader, R
 {
 	
 	m_Shader = (VulkanShader*)shader;
-
-	VkAttachmentDescription colorAttachment = {};
-	colorAttachment.format = gpDesc->surfaceFormat.format;
-	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-	VkAttachmentReference colorAttachmentRef = {};
-	colorAttachmentRef.attachment = 0;
-	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-	VkSubpassDescription subpass = {};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colorAttachmentRef;
-
-	VkRenderPassCreateInfo renderPassInfo = {};
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	renderPassInfo.attachmentCount = 1;
-	renderPassInfo.pAttachments = &colorAttachment;
-	renderPassInfo.subpassCount = 1;
-	renderPassInfo.pSubpasses = &subpass;
-
-	auto r = vkCreateRenderPass(gpDesc->device, &renderPassInfo, nullptr, &m_RenderPass);
-	if (r != VK_SUCCESS) RS_ERROR("Failed Creating RenderPass!");
+	m_RenderPass = gpDesc->renderPass;
+/*
+// 	VkAttachmentDescription colorAttachment = {};
+// 	colorAttachment.format = gpDesc->surfaceFormat.format;
+// 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+// 	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+// 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+// 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+// 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+// 	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+// 	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+// 
+// 	VkAttachmentReference colorAttachmentRef = {};
+// 	colorAttachmentRef.attachment = 0;
+// 	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+// 
+// 	VkSubpassDescription subpass = {};
+// 	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+// 	subpass.colorAttachmentCount = 1;
+// 	subpass.pColorAttachments = &colorAttachmentRef;
+// 
+// 	VkRenderPassCreateInfo renderPassInfo = {};
+// 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+// 	renderPassInfo.attachmentCount = 1;
+// 	renderPassInfo.pAttachments = &colorAttachment;
+// 	renderPassInfo.subpassCount = 1;
+// 	renderPassInfo.pSubpasses = &subpass;
+// 
+// 	auto r = vkCreateRenderPass(gpDesc->device, &renderPassInfo, nullptr, &m_RenderPass);
+// 	if (r != VK_SUCCESS) RS_ERROR("Failed Creating RenderPass!");
+*/
 
 	//TODO:
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
@@ -140,7 +142,20 @@ RedSt4R::API::VulkanGraphicsPipeline::VulkanGraphicsPipeline(RSShader* shader, R
 
 	auto rr = vkCreateGraphicsPipelines(gpDesc->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline);
 	if (rr != VK_SUCCESS) RS_ERROR("FAILED CREATING GRAPHICS PIPELINE!!!!!!!");
-	
+
+	m_RenderPassBeginInfo[0].sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	m_RenderPassBeginInfo[0].renderPass = m_RenderPass;
+	m_RenderPassBeginInfo[0].framebuffer = gpDesc->frameBuffer[0];
+	m_RenderPassBeginInfo[0].renderArea = gpDesc->rect2D;
+	m_RenderPassBeginInfo[0].clearValueCount = 1;
+	m_RenderPassBeginInfo[0].pClearValues = &gpDesc->clearValue;
+
+	m_RenderPassBeginInfo[1].sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	m_RenderPassBeginInfo[1].renderPass = m_RenderPass;
+	m_RenderPassBeginInfo[1].framebuffer = gpDesc->frameBuffer[1];
+	m_RenderPassBeginInfo[1].renderArea = gpDesc->rect2D;
+	m_RenderPassBeginInfo[1].clearValueCount = 1;
+	m_RenderPassBeginInfo[1].pClearValues = &gpDesc->clearValue;
 }
 
 

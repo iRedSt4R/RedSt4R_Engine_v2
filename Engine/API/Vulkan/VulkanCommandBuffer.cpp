@@ -3,6 +3,36 @@
 #include "VulkanRenderer.h"
 
 
+void RedSt4R::API::VulkanCommandBuffer::rsCmdBindVertexBuffers(RSVertexBuffer* pVertexBuffers, uint32_t firstBinding, uint32_t bindingCount, int offsets)
+{
+	VkDeviceSize devSize = { 0 };
+	VulkanVertexBuffer* vulkanVertexBuffer= (VulkanVertexBuffer*)pVertexBuffers;
+
+	vkCmdBindVertexBuffers(m_CommandBuffer, firstBinding, bindingCount, vulkanVertexBuffer->GetVkBuffer(), &devSize);
+}
+
+void RedSt4R::API::VulkanCommandBuffer::rsCmdBindPipeline(RSGraphicsPipeline* pGraphicsPipeline, EPipelineBindPoint bindPoint)
+{
+	VulkanGraphicsPipeline* graphicsPip = (VulkanGraphicsPipeline*)pGraphicsPipeline;
+
+	if (bindPoint == EPipelineBindPoint::Graphics)
+	{
+		vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPip->GetVkPipeline());
+	}
+}
+
+void RedSt4R::API::VulkanCommandBuffer::rsCmdBeginRenderPass(RSGraphicsPipeline* pGraphicsPipeline, uint32_t frameBufferIndex)
+{
+	VulkanGraphicsPipeline* graphicsPip = (VulkanGraphicsPipeline*)pGraphicsPipeline;
+
+	vkCmdBeginRenderPass(m_CommandBuffer, &graphicsPip->GetVkRenderPassBeginInfo(frameBufferIndex), VK_SUBPASS_CONTENTS_INLINE);
+}
+
+void RedSt4R::API::VulkanCommandBuffer::rsCmdDraw(uint32_t vertexCount, uint32_t firstVertex)
+{
+	vkCmdDraw(m_CommandBuffer, vertexCount, 1, firstVertex, 0);
+}
+
 RedSt4R::API::VulkanCommandBuffer::VulkanCommandBuffer(float flags)
 {
 	VkResult r;

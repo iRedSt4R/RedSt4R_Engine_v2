@@ -23,22 +23,16 @@ namespace RedSt4R
 		class VulkanRenderer : public RSRenderer
 		{
 		public:
-			GLFWwindow*			m_Window			= nullptr;
 			Window* window;
-			std::vector<VkPhysicalDevice>			vPhysicalDevices;
-			std::vector<VkQueueFamilyProperties>	vQueueFamilyProperties;
 
-			RSCommandBuffer* m_commandbuf;
+			VulkanCommandBuffer* m_commandbuf;
+			VulkanCommandBuffer* m_commandBuf2;
 
 			static int queueFamilyIndexWithGB;
 			uint32_t currentBackBufferIndex = UINT32_MAX;
 			VkFence	m_FenceForSwapChain = VK_NULL_HANDLE;
 
-			static VkDevice		m_Device;
-			VkPhysicalDevice	m_PhysicalDevice	= VK_NULL_HANDLE;
-			bool bIsDestroyed = false;
-
-
+			static VkDevice				m_Device;
 			static VkInstance			m_Instance;	
 			static VkQueue				m_Queue;
 			static VkFence				m_Fence;
@@ -53,16 +47,14 @@ namespace RedSt4R
 			std::vector<VkImageView> m_vSwapChainImageView;
 			std::vector<VkFramebuffer> m_vFrameBuffer;
 
-			VkSurfaceCapabilitiesKHR m_SurfaceCapabilities = {};
-			static VkSurfaceFormatKHR  m_SurfaceFormat;
-
 			VkRect2D rect2D;
 			VkClearValue clearValue;
+			bool bFirst = true;
+			
 
 			RSShader* testShader;
-
 			VkPipeline m_Pipeline;
-			RSGraphicsPipeline* graphicsPip;
+			VulkanGraphicsPipeline* graphicsPip;
 			VulkanDevice* device;
 			VulkanVertexBuffer* vertexBuffer;
 

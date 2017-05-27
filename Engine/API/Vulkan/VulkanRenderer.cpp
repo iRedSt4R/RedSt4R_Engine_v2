@@ -17,12 +17,11 @@ VkInstance RedSt4R::API::VulkanRenderer::m_Instance = VK_NULL_HANDLE;
 VkQueue RedSt4R::API::VulkanRenderer::m_Queue = VK_NULL_HANDLE;
 VkFence RedSt4R::API::VulkanRenderer::m_Fence = VK_NULL_HANDLE;
 VkSemaphore RedSt4R::API::VulkanRenderer::m_Semaphore = VK_NULL_HANDLE;
-VkSurfaceFormatKHR RedSt4R::API::VulkanRenderer::m_SurfaceFormat = {};
 
 RedSt4R::API::VulkanRenderer::VulkanRenderer(RedSt4R::Window* pWindow)
 	:window(pWindow)
 {
-	m_Window = pWindow->GetGLFWWindow();
+	//m_Window = pWindow->GetGLFWWindow();
 }
 
 RedSt4R::API::VulkanRenderer::~VulkanRenderer()
@@ -57,13 +56,13 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	//---------------------- Check For Supported GPUs ------------------------//
 	device = new VulkanDevice(EDeviceType::BestGPU, false);
 	m_Device = device->GetVkDevice();
-	vPhysicalDevices = device->GetVkPhysicalDevices();
+	//vPhysicalDevices = device->GetVkPhysicalDevices();
 
-	vkGetDeviceQueue(m_Device, queueFamilyIndexWithGB, 0, &m_Queue);
+	vkGetDeviceQueue(device->GetVkDevice(), queueFamilyIndexWithGB, 0, &m_Queue);
 
 	//------------------------- Create Win32 Surface ---------------------//
 
-	window->CreateVulkanSurface(m_Instance, m_Device, vPhysicalDevices[0]);
+	window->CreateVulkanSurface(m_Instance, device->GetVkDevice(), device->GetVkPhysicalDevices()[0]);
 	
 	VkSwapchainCreateInfoKHR scCreateInfo = {};
 	scCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -84,14 +83,14 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	scCreateInfo.clipped = VK_TRUE;
 	scCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 	
-	r = vkCreateSwapchainKHR(m_Device, &scCreateInfo, nullptr, &m_Swapchain);
+	r = vkCreateSwapchainKHR(device->GetVkDevice(), &scCreateInfo, nullptr, &m_Swapchain);
 	if (r != VK_SUCCESS) RS_ERROR("Failed Creating SwapChain!");
 
 	//--------------------------- Swap Chain Images --------------------------//
 	m_vSwapChainImage.resize(swapChainImages);
 	m_vSwapChainImageView.resize(swapChainImages);
 
-	r = vkGetSwapchainImagesKHR(m_Device, m_Swapchain, &swapChainImages, m_vSwapChainImage.data());
+	r = vkGetSwapchainImagesKHR(device->GetVkDevice(), m_Swapchain, &swapChainImages, m_vSwapChainImage.data());
 	if (r != VK_SUCCESS) RS_ERROR("Failed Getting SwapChain Images!");
 
 	for (uint32_t i = 0; i < swapChainImages; ++i)
@@ -111,7 +110,7 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		ivCreateInfo.subresourceRange.baseArrayLayer = 0;
 		ivCreateInfo.subresourceRange.layerCount = 1;
 
-		vkCreateImageView(m_Device, &ivCreateInfo, nullptr, &m_vSwapChainImageView[i]);
+		vkCreateImageView(device->GetVkDevice(), &ivCreateInfo, nullptr, &m_vSwapChainImageView[i]);
 		if (r != VK_SUCCESS) RS_ERROR("Failed Creating ImageView From SwapChain Images!");
 	}
 
@@ -131,7 +130,8 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	clearValue.color.float32[3] = 0.2f;
 
 	//---------------------- Command Pool and Buffers -----------------------//
-	m_commandbuf = RSCommandBuffer::CreateCommandBuffer(1);
+	m_commandbuf = new VulkanCommandBuffer(1);
+	m_commandBuf2 = new VulkanCommandBuffer(1);
 
 	//---------------------- Creating Test Shader ----------------------------//
 	testShader = RSShader::CreateShader("Shaders/vert.spv", "Shaders/frag.spv");
@@ -144,17 +144,34 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
-	RS_DESC_GRAPHICSPIPELINE gpDesc;
-	gpDesc.clearValue = clearValue;
-	gpDesc.device = m_Device;
-	gpDesc.rect2D = rect2D;
-	gpDesc.surfaceFormat = window->GetVkSurfaceFormat();
-	gpDesc.viewport = viewport;
-	gpDesc.vertexBuffer = vertexBuffer;
+	VkAttachmentDescription colorAttachment = {};
+	colorAttachment.format = window->GetVkSurfaceFormat().format;
+	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
+	VkAttachmentReference colorAttachmentRef = {};
+	colorAttachmentRef.attachment = 0;
+	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-	
-	graphicsPip = RSGraphicsPipeline::CreateGraphicsPipeline(testShader, &gpDesc);
+	VkSubpassDescription subpass = {};
+	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass.colorAttachmentCount = 1;
+	subpass.pColorAttachments = &colorAttachmentRef;
+
+	VkRenderPassCreateInfo renderPassInfo = {};
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+	renderPassInfo.attachmentCount = 1;
+	renderPassInfo.pAttachments = &colorAttachment;
+	renderPassInfo.subpassCount = 1;
+	renderPassInfo.pSubpasses = &subpass;
+
+	auto r = vkCreateRenderPass(device->GetVkDevice(), &renderPassInfo, nullptr, &m_RenderPass);
+	if (r != VK_SUCCESS) RS_ERROR("Failed Creating RenderPass!");
 
 	m_vFrameBuffer.resize(swapChainImages);
 	for (uint32_t i = 0; i < swapChainImages; ++i)
@@ -162,35 +179,62 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		VkFramebufferCreateInfo framecf = {};
 		framecf.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framecf.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framecf.renderPass = ((VulkanGraphicsPipeline*)graphicsPip)->GetVkRenderPass();
+		framecf.renderPass = m_RenderPass;
 		framecf.attachmentCount = 1;
 		framecf.pAttachments = &m_vSwapChainImageView[i];
 		framecf.width = EngineConfig::GetWindowWidth();
 		framecf.height = EngineConfig::GetWindowHeight();
 		framecf.layers = 1;
-		r = vkCreateFramebuffer(m_Device, &framecf, nullptr, &m_vFrameBuffer[i]);
+		r = vkCreateFramebuffer(device->GetVkDevice(), &framecf, nullptr, &m_vFrameBuffer[i]);
 		if (r != VK_SUCCESS) RS_ERROR("Failed Creating FrameBuffer!");
 	}
+
+	RS_DESC_GRAPHICSPIPELINE gpDesc;
+	gpDesc.clearValue = clearValue;
+	gpDesc.device = device->GetVkDevice();
+	gpDesc.rect2D = rect2D;
+	gpDesc.surfaceFormat = window->GetVkSurfaceFormat();
+	gpDesc.viewport = viewport;
+	gpDesc.vertexBuffer = vertexBuffer;
+	gpDesc.frameBuffer = m_vFrameBuffer.data();
+	gpDesc.renderPass = m_RenderPass;
+
+	graphicsPip = new VulkanGraphicsPipeline(testShader, &gpDesc);
 
 	//--------------------------- Create Fence -----------------------------//
 	VkFenceCreateInfo fenceCreateInfo = {};
 	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 
-	vkCreateFence(m_Device, &fenceCreateInfo, nullptr, &m_Fence);
-	vkCreateFence(m_Device, &fenceCreateInfo, nullptr, &m_FenceForSwapChain);
+	vkCreateFence(device->GetVkDevice(), &fenceCreateInfo, nullptr, &m_Fence);
+	vkCreateFence(device->GetVkDevice(), &fenceCreateInfo, nullptr, &m_FenceForSwapChain);
 
 	//Create Semaphore
 	VkSemaphoreCreateInfo sCreateInfo = {};
 	sCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-	vkCreateSemaphore(m_Device, &sCreateInfo, nullptr, &m_Semaphore);
+	vkCreateSemaphore(device->GetVkDevice(), &sCreateInfo, nullptr, &m_Semaphore);
+
+	m_commandbuf->Begin();
+	m_commandbuf->rsCmdBeginRenderPass(graphicsPip, 0);
+	m_commandbuf->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
+	m_commandbuf->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
+	m_commandbuf->rsCmdDraw(3, 0);
+	m_commandbuf->End();
+
+	m_commandBuf2->Begin();
+	m_commandBuf2->rsCmdBeginRenderPass(graphicsPip, 1);
+	m_commandBuf2->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
+	m_commandBuf2->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
+	m_commandBuf2->rsCmdDraw(3, 0);
+	m_commandBuf2->End();
+
 
 }
 void RedSt4R::API::VulkanRenderer::BeginRenderer()
 {
-	vkAcquireNextImageKHR(m_Device, m_Swapchain, UINT64_MAX, 0, m_FenceForSwapChain, &currentBackBufferIndex);
-	vkWaitForFences(m_Device, 1, &m_FenceForSwapChain, VK_TRUE, UINT64_MAX);
-	vkResetFences(m_Device, 1, &m_FenceForSwapChain);
+	vkAcquireNextImageKHR(device->GetVkDevice(), m_Swapchain, UINT64_MAX, 0, m_FenceForSwapChain, &currentBackBufferIndex);
+	vkWaitForFences(device->GetVkDevice(), 1, &m_FenceForSwapChain, VK_TRUE, UINT64_MAX);
+	vkResetFences(device->GetVkDevice(), 1, &m_FenceForSwapChain);
 	vkQueueWaitIdle(m_Queue);
 }
 
@@ -201,27 +245,17 @@ void RedSt4R::API::VulkanRenderer::Update()
 
 void RedSt4R::API::VulkanRenderer::Render()
 {
-	VkRenderPassBeginInfo renderPassBeginInfo = {};
-	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassBeginInfo.renderPass = ((VulkanGraphicsPipeline*)graphicsPip)->GetVkRenderPass();
-	renderPassBeginInfo.framebuffer = m_vFrameBuffer[currentBackBufferIndex];
-	renderPassBeginInfo.renderArea = rect2D;
-	renderPassBeginInfo.clearValueCount = 1;
-	renderPassBeginInfo.pClearValues = &clearValue;
-
-	VkDeviceSize offsets[] = { 0 };
-
-	m_commandbuf->Begin();
-	vkCmdBeginRenderPass(((VulkanCommandBuffer*)m_commandbuf)->GetVkCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-	vkCmdBindPipeline(((VulkanCommandBuffer*)m_commandbuf)->m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ((VulkanGraphicsPipeline*)graphicsPip)->GetVkPipeline());
-	vkCmdBindVertexBuffers(((VulkanCommandBuffer*)m_commandbuf)->m_CommandBuffer, 0, 1, vertexBuffer->GetVkBuffer(), offsets);
-	vkCmdDraw(((VulkanCommandBuffer*)m_commandbuf)->m_CommandBuffer, 3, 1, 0, 0);
-	m_commandbuf->End();
 	
-	m_commandbuf->SubmitToQueue(m_Queue);
-
-	vkWaitForFences(m_Device, 1, &m_Fence, VK_TRUE, UINT64_MAX);
-
+	if (currentBackBufferIndex == 0)
+	{
+		m_commandbuf->SubmitToQueue(m_Queue);
+		vkWaitForFences(device->GetVkDevice(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
+	}
+	else
+	{
+		m_commandBuf2->SubmitToQueue(m_Queue);
+		vkWaitForFences(device->GetVkDevice(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
+	}
 }
 
 void RedSt4R::API::VulkanRenderer::EndRenderer()
@@ -235,7 +269,6 @@ void RedSt4R::API::VulkanRenderer::EndRenderer()
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &m_Swapchain;
 	presentInfo.pImageIndices = &currentBackBufferIndex;
-
 
 	vkQueuePresentKHR(m_Queue, &presentInfo);
 }
