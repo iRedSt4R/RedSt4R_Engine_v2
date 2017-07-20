@@ -29,7 +29,7 @@ void RedSt4R::API::OpenGLRenderer::Update()
 	
 }
 
-void RedSt4R::API::OpenGLRenderer::Render()
+void RedSt4R::API::OpenGLRenderer::Render(RSCommandBuffer* pRSCmd1, RSCommandBuffer* pRSCmd2)
 {
 	
 }

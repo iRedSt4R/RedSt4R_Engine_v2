@@ -10,8 +10,7 @@ namespace RedSt4R
 		{
 		public:
 			VkQueue m_Queue = VK_NULL_HANDLE;
-			
-
+		
 
 		public:
 			VulkanQueue();

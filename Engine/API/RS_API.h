@@ -1,8 +1,5 @@
 #pragma once
 #include "../Config/RenderingConfig.h"
-//#include "../RSIncludeVulkan.h"
-//#include "RSIncludeOpenGL.h"
-
 
 #include "../Debug/DebugMacros.h"
 

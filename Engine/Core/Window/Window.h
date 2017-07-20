@@ -9,8 +9,6 @@
 
 namespace RedSt4R
 {
-	//namespace API{ class VulkanRenderer; }
-
 	class Window
 	{
 	private:
@@ -38,6 +36,8 @@ namespace RedSt4R
 
 	public:
 		__inline static GLFWwindow* GetGLFWWindow() { return m_Window; }
+		__inline int GetWindowWidth() { return m_WindowWidth; }
+		__inline int GetWindowHeight() { return m_WindowHeight; }
 		__inline VkSurfaceKHR GetVkSurface() { return m_VulkanSurface; }
 		__inline VkSurfaceFormatKHR GetVkSurfaceFormat() { return m_VulaknSurfaceFormat; }
 	};

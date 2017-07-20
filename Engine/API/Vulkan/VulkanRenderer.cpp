@@ -1,16 +1,17 @@
 #include "VulkanRenderer.h"
 #include "VkBase.h"
 
-VertexColor vertices[] = { // Top Right
-	VertexColor(0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f),  // Bottom Right
-	VertexColor(0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f),  // Bottom Left
-	VertexColor(-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f)   // Top Left 
-};
+ VertexColor vertices[] = { // Top Right
+ 	VertexColor(0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f),  // Bottom Right
+ 	VertexColor(0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f),  // Bottom Left
+ 	VertexColor(-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f)   // Top Left 
+ };
 
 using namespace RedSt4R;
 
 VkResult r;
 
+RedSt4R::API::VulkanDevice* RedSt4R::API::VulkanRenderer::device;
 int RedSt4R::API::VulkanRenderer::queueFamilyIndexWithGB = 0;
 VkDevice RedSt4R::API::VulkanRenderer::m_Device = VK_NULL_HANDLE;
 VkInstance RedSt4R::API::VulkanRenderer::m_Instance = VK_NULL_HANDLE;
@@ -18,10 +19,11 @@ VkQueue RedSt4R::API::VulkanRenderer::m_Queue = VK_NULL_HANDLE;
 VkFence RedSt4R::API::VulkanRenderer::m_Fence = VK_NULL_HANDLE;
 VkSemaphore RedSt4R::API::VulkanRenderer::m_Semaphore = VK_NULL_HANDLE;
 
-RedSt4R::API::VulkanRenderer::VulkanRenderer(RedSt4R::Window* pWindow)
+RedSt4R::API::RS_DESC_GRAPHICSPIPELINE RedSt4R::API::VulkanRenderer::gpDesc;
+RedSt4R::API::VulkanRenderer::VulkanRenderer(RSDevice* pDevice, RedSt4R::Window* pWindow)
 	:window(pWindow)
 {
-	//m_Window = pWindow->GetGLFWWindow();
+	
 }
 
 RedSt4R::API::VulkanRenderer::~VulkanRenderer()
@@ -53,14 +55,10 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	r = vkCreateInstance(&instanceCreateInfo, nullptr, &m_Instance);
 	if (r != VK_SUCCESS) RS_ERROR("Failed creating Vulkan Instance!");
 
-	//---------------------- Check For Supported GPUs ------------------------//
 	device = new VulkanDevice(EDeviceType::BestGPU, false);
+	//device = (VulkanDevice*)rsDevice;
 	m_Device = device->GetVkDevice();
-	//vPhysicalDevices = device->GetVkPhysicalDevices();
-
 	vkGetDeviceQueue(device->GetVkDevice(), queueFamilyIndexWithGB, 0, &m_Queue);
-
-	//------------------------- Create Win32 Surface ---------------------//
 
 	window->CreateVulkanSurface(m_Instance, device->GetVkDevice(), device->GetVkPhysicalDevices()[0]);
 	
@@ -114,7 +112,7 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		if (r != VK_SUCCESS) RS_ERROR("Failed Creating ImageView From SwapChain Images!");
 	}
 
-	vertexBuffer = new VulkanVertexBuffer(device, vertices);
+	//vertexBuffer = new VulkanVertexBuffer(device, vertices);
 
 	//----------------------- Create Render Pass -----------------------//
 	// TODO: Add Depth/Stencil
@@ -130,11 +128,11 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	clearValue.color.float32[3] = 0.2f;
 
 	//---------------------- Command Pool and Buffers -----------------------//
-	m_commandbuf = new VulkanCommandBuffer(1);
-	m_commandBuf2 = new VulkanCommandBuffer(1);
+	//m_commandbuf = new VulkanCommandBuffer(1);
+	//m_commandBuf2 = new VulkanCommandBuffer(1);
 
 	//---------------------- Creating Test Shader ----------------------------//
-	testShader = new VulkanShader("Shaders/vert.spv", "Shaders/frag.spv");
+	//testShader = new VulkanShader("Shaders/vert.spv", "Shaders/frag.spv");
 
 	VkViewport viewport = {};
 	viewport.x = 0.0f;
@@ -189,7 +187,6 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 		if (r != VK_SUCCESS) RS_ERROR("Failed Creating FrameBuffer!");
 	}
 
-	RS_DESC_GRAPHICSPIPELINE gpDesc;
 	gpDesc.clearValue = clearValue;
 	gpDesc.device = device->GetVkDevice();
 	gpDesc.rect2D = rect2D;
@@ -199,7 +196,7 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	gpDesc.frameBuffer = m_vFrameBuffer.data();
 	gpDesc.renderPass = m_RenderPass;
 
-	graphicsPip = new VulkanGraphicsPipeline(testShader, &gpDesc);
+	//graphicsPip = new VulkanGraphicsPipeline(testShader, &gpDesc);
 
 	//--------------------------- Create Fence -----------------------------//
 	VkFenceCreateInfo fenceCreateInfo = {};
@@ -213,20 +210,21 @@ void RedSt4R::API::VulkanRenderer::InitRenderer()
 	sCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
 	vkCreateSemaphore(device->GetVkDevice(), &sCreateInfo, nullptr, &m_Semaphore);
-
-	m_commandbuf->Begin();
-		m_commandbuf->rsCmdBeginRenderPass(graphicsPip, 0);
-		m_commandbuf->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
-		m_commandbuf->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
-		m_commandbuf->rsCmdDraw(3, 0);
-	m_commandbuf->End();
-
-	m_commandBuf2->Begin();
-		m_commandBuf2->rsCmdBeginRenderPass(graphicsPip, 1);
-		m_commandBuf2->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
-		m_commandBuf2->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
-		m_commandBuf2->rsCmdDraw(3, 0);
-	m_commandBuf2->End();
+/*
+ 	m_commandbuf->Begin();
+ 		m_commandbuf->rsCmdBeginRenderPass(graphicsPip, 0);
+ 		m_commandbuf->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
+ 		m_commandbuf->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
+ 		m_commandbuf->rsCmdDraw(3, 0);
+ 	m_commandbuf->End();
+ 
+ 	m_commandBuf2->Begin();
+ 		m_commandBuf2->rsCmdBeginRenderPass(graphicsPip, 1);
+ 		m_commandBuf2->rsCmdBindPipeline(graphicsPip, EPipelineBindPoint::Graphics);
+ 		m_commandBuf2->rsCmdBindVertexBuffers(vertexBuffer, 0, 1, 0);
+ 		m_commandBuf2->rsCmdDraw(3, 0);
+ 	m_commandBuf2->End();
+*/
 
 
 }
@@ -243,20 +241,20 @@ void RedSt4R::API::VulkanRenderer::Update()
 
 }
 
-void RedSt4R::API::VulkanRenderer::Render()
+void RedSt4R::API::VulkanRenderer::Render(RSCommandBuffer* pRSCmd1, RSCommandBuffer* pRSCmd2)
 {
 	
 	//For Double Buffering Only
-	if (currentBackBufferIndex == 0)
-	{
-		m_commandbuf->SubmitToQueue(m_Queue);
-		vkWaitForFences(device->GetVkDevice(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
-	}
-	else
-	{
-		m_commandBuf2->SubmitToQueue(m_Queue);
-		vkWaitForFences(device->GetVkDevice(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
-	}
+ 	if (currentBackBufferIndex == 0)
+ 	{
+		pRSCmd1->SubmitToQueue(m_Queue);
+ 		vkWaitForFences(device->GetVkDevice(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
+ 	}
+ 	else
+ 	{
+		pRSCmd2->SubmitToQueue(m_Queue);
+ 		vkWaitForFences(device->GetVkDevice(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
+ 	}
 }
 
 void RedSt4R::API::VulkanRenderer::EndRenderer()

@@ -21,14 +21,15 @@ namespace RedSt4R
 		class VulkanRenderer : public RSRenderer
 		{
 		public:
+			RSDevice* rsDevice;
+
 			Window* window;
 
 			VulkanCommandBuffer* m_commandbuf;
 			VulkanCommandBuffer* m_commandBuf2;
 
 			VulkanShader* testShader;
-			VulkanGraphicsPipeline* graphicsPip;
-			VulkanDevice* device;
+			static VulkanDevice* device;
 			VulkanVertexBuffer* vertexBuffer;
 
 			static int queueFamilyIndexWithGB;
@@ -36,13 +37,13 @@ namespace RedSt4R
 			VkFence	m_FenceForSwapChain = VK_NULL_HANDLE;
 
 			static VkDevice				m_Device;
-			static VkInstance			m_Instance;	
+			static VkInstance			m_Instance;
 			static VkQueue				m_Queue;
 			static VkFence				m_Fence;
 			static VkSemaphore			m_Semaphore;
-						
-			VkSwapchainKHR		m_Swapchain			= VK_NULL_HANDLE;
-			VkRenderPass		m_RenderPass		= VK_NULL_HANDLE;
+
+			VkSwapchainKHR		m_Swapchain = VK_NULL_HANDLE;
+			VkRenderPass		m_RenderPass = VK_NULL_HANDLE;
 			uint32_t swapChainImages = EngineConfig::GetSwapChainImageCout();
 
 			std::vector<VkImage> m_vSwapChainImage;
@@ -51,20 +52,23 @@ namespace RedSt4R
 
 			VkRect2D rect2D;
 			VkClearValue clearValue;
-			
+			static RS_DESC_GRAPHICSPIPELINE gpDesc;
+
 		public:
-			VulkanRenderer(RedSt4R::Window* pWindow);
+			VulkanRenderer(RSDevice* pDevice, RedSt4R::Window* pWindow);
 			~VulkanRenderer();
-		
+
 			void InitRenderer() override;
 			void BeginRenderer() override;
 			void Update() override;
-			void Render() override;
+			void Render(RSCommandBuffer* pRSCmd1, RSCommandBuffer* pRSCmd2) override;
 			void EndRenderer() override;
 			void ShutDownRenderer() override;
 
 			__inline VkDevice GetVkDevice() { return m_Device; }
 			__inline static VkInstance GetVkInstance() { return m_Instance; }
+			__inline static RSDevice* GetRSDevice() { return (RSDevice*)device; }
+			__inline static RS_DESC_GRAPHICSPIPELINE* Get_RS_DESC_GRAPHICSPIPELINE() { return &gpDesc; }
 		};
 	}
 }
